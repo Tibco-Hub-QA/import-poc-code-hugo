@@ -12,8 +12,8 @@
     "github.com/project-flogo/contrib/function/coerce",
     "github.com/project-flogo/contrib/function/array"
   ],
-  "name": "AHA_Export",
-  "description": "A flow to export AHA Stories",
+  "name": "Flogo Project",
+  "description": "This is a Flogo project",
   "version": "1.0.0",
   "type": "flogo:app",
   "appModel": "1.1.1",
