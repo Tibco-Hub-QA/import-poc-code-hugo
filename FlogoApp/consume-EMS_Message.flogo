@@ -6,7 +6,7 @@
     "github.com/tibco/flogo-ems/src/app/EMS/trigger/receivemessage",
     "github.com/tibco/flogo-ems/src/app/EMS/connector/ems"
   ],
-  "name": "MLE_Consume-EMS_Message",
+  "name": "MLE_Consume-EMS_Message2",
   "description": "",
   "version": "1.0.0",
   "type": "flogo:app",
