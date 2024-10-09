@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns="http://www.tibco.com/pe/DeployedVarsType" xmlns:ns2="http://www.tibco.com/pe/SignalInActivitySchema" xmlns:ns3="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:pfx="http://www.tibco.com/xmlns/ae2xsd/2002/05/Appraisal/AppraisalSchema" xmlns:ns1="www.tibco.com/be/ontology/BEmodule/Events/appraisalRequest" xmlns:ns4="www.tibco.com/plugin/be" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns5="http://www.tibco.com/namespaces/tnt/plugins/jms" xmlns:ns6="www.tibco.com/be/ontology/pawn/Events/appraisalRequest">
+    <xsd:import namespace="http://www.tibco.com/xmlns/ae2xsd/2002/05/Appraisal/AppraisalSchema" schemaLocation="/AESchemas/Appraisal/AppraisalSchema.aeschema"/>
+    <pd:name>ProcessDefinitions/BankService/PublishAppraisalRequest.process</pd:name>
+    <pd:description>publish appraisal request</pd:description>
+    <pd:startName>ReceiveApprRequest</pd:startName>
+    <pd:startX>0</pd:startX>
+    <pd:startY>0</pd:startY>
+    <pd:returnBindings/>
+    <pd:starter name="ReceiveApprRequest">
+        <pd:type>com.tibco.be.bw.plugin.BEReceiveEvent</pd:type>
+        <pd:resourceType>ae.activities.BEReceiveEvent</pd:resourceType>
+        <pd:description>receive request for appraisal</pd:description>
+        <pd:x>65</pd:x>
+        <pd:y>183</pd:y>
+        <config>
+            <eventRef>/pawn/Events/appraisalRequest.event</eventRef>
+            <entityNS>/pawn/Events/appraisalRequest</entityNS>
+            <entityName>appraisalRequest</entityName>
+        </config>
+        <pd:inputBindings/>
+    </pd:starter>
+    <pd:endName>End</pd:endName>
+    <pd:endX>891</pd:endX>
+    <pd:endY>72</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables>
+        <taskMin>
+            <xsd:element name="root">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="confirm_subject" type="xsd:string"/>
+                        <xsd:element name="value" type="xsd:int"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </taskMin>
+    </pd:processVariables>
+    <pd:activity name="SendTaskConfirmation">
+        <pd:type>com.tibco.plugin.tibrv.RVRequestActivity</pd:type>
+        <pd:resourceType>ae.rvpalette.RVRequestActivity</pd:resourceType>
+        <pd:description>send confirmation and details for appraisal then wait for reply including appraisal result</pd:description>
+        <pd:x>794</pd:x>
+        <pd:y>267</pd:y>
+        <config>
+            <wantsValidationForOutput>true</wantsValidationForOutput>
+            <wantsFiltrationForOutput>true</wantsFiltrationForOutput>
+            <wantsXMLCompliantFieldNames>true</wantsXMLCompliantFieldNames>
+            <wantsXMLCompliantFieldNamesOutput>true</wantsXMLCompliantFieldNamesOutput>
+            <sharedChannel>/SharedConnections/RVTransport.rvtransport</sharedChannel>
+            <subject/>
+            <inputXsdString ref="pfx:ApprDetails"/>
+            <outputXsdString ref="pfx:ApprResult"/>
+        </config>
+        <pd:inputBindings>
+            <ActivityInput>
+                <subject>
+                    <xsl:value-of select="$taskMin/root/confirm_subject"/>
+                </subject>
+                <replySubject>
+                    <xsl:value-of select="concat($_globalVariables/ns:GlobalVariables/ENV,&quot;.&quot;,$_globalVariables/ns:GlobalVariables/AppraisalResultSubject)"/>
+                </replySubject>
+                <body>
+                    <customerName>
+                        <xsl:choose>
+                            <xsl:when test="exists($ReceiveApprRequest/ns4:BEReceiveEventOutput/ns6:appraisalRequest/customerName)">
+                                <xsl:value-of select="$ReceiveApprRequest/ns4:BEReceiveEventOutput/ns6:appraisalRequest/customerName"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </customerName>
+                    <realtyDetails>
+                        <xsl:choose>
+                            <xsl:when test="exists($ReceiveApprRequest/ns4:BEReceiveEventOutput/ns6:appraisalRequest/realtyDetails)">
+                                <xsl:value-of select="$ReceiveApprRequest/ns4:BEReceiveEventOutput/ns6:appraisalRequest/realtyDetails"/>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </realtyDetails>
+                </body>
+            </ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:group name="Critical section">
+        <pd:type>com.tibco.pe.core.CriticalSectionGroup</pd:type>
+        <pd:resourceType>ae.process.group</pd:resourceType>
+        <pd:x>132</pd:x>
+        <pd:y>19</pd:y>
+        <pd:width>596</pd:width>
+        <pd:height>308</pd:height>
+        <pd:collapsedWidth>57</pd:collapsedWidth>
+        <pd:collapsedHeight>70</pd:collapsedHeight>
+        <pd:groupVariables/>
+        <pd:joinToggle>inherit</pd:joinToggle>
+        <config>
+            <pd:groupType>criticalSection</pd:groupType>
+            <serializable>false</serializable>
+            <pd:scope>single</pd:scope>
+        </config>
+        <pd:inputBindings/>
+        <pd:expanded>true</pd:expanded>
+        <pd:transition>
+            <pd:from>start</pd:from>
+            <pd:to>InitMin</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Choose the least busy appraiser</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>PublishRVRequest</pd:from>
+            <pd:to>Choose the least busy appraiser</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>InitMin</pd:from>
+            <pd:to>PublishRVRequest</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:activity name="PublishRVRequest">
+            <pd:type>com.tibco.plugin.tibrv.RVPubActivity</pd:type>
+            <pd:resourceType>ae.rvpalette.RVPubActivity</pd:resourceType>
+            <pd:description>publish RV request for appraisal</pd:description>
+            <pd:x>299</pd:x>
+            <pd:y>181</pd:y>
+            <config>
+                <wantsXMLCompliantFieldNames>true</wantsXMLCompliantFieldNames>
+                <sharedChannel>/SharedConnections/RVTransport.rvtransport</sharedChannel>
+                <subject>%%ENV%%.%%AppraisalRequestSubject%%</subject>
+                <xsdString ref="pfx:ApprRequest"/>
+            </config>
+            <pd:inputBindings>
+                <ActivityInput>
+                    <body>
+                        <replySubj>
+                            <xsl:value-of select="concat($_globalVariables/ns:GlobalVariables/ENV,&quot;.&quot;,$_globalVariables/ns:GlobalVariables/AppraisalReplySubject)"/>
+                        </replySubj>
+                    </body>
+                </ActivityInput>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:group name="Choose the least busy appraiser">
+            <pd:type>com.tibco.pe.core.LoopGroup</pd:type>
+            <pd:resourceType>ae.process.group</pd:resourceType>
+            <pd:x>369</pd:x>
+            <pd:y>55</pd:y>
+            <pd:width>322</pd:width>
+            <pd:height>237</pd:height>
+            <pd:collapsedWidth>57</pd:collapsedWidth>
+            <pd:collapsedHeight>70</pd:collapsedHeight>
+            <pd:groupVariables/>
+            <pd:joinToggle>inherit</pd:joinToggle>
+            <config>
+                <pd:groupType>while</pd:groupType>
+                <serializable>false</serializable>
+                <pd:indexSlot>index</pd:indexSlot>
+                <pd:outSlot>result</pd:outSlot>
+                <pd:activityOutputName>WaitForReply</pd:activityOutputName>
+                <pd:whileCondition>$index &lt; 5</pd:whileCondition>
+                <pd:accumulateOutput>false</pd:accumulateOutput>
+            </config>
+            <pd:inputBindings/>
+            <pd:expanded>true</pd:expanded>
+            <pd:transition>
+                <pd:from>start</pd:from>
+                <pd:to>WaitForReply</pd:to>
+                <pd:lineType>Default</pd:lineType>
+                <pd:lineColor>-16777216</pd:lineColor>
+                <pd:conditionType>always</pd:conditionType>
+            </pd:transition>
+            <pd:transition>
+                <pd:from>SaveTaskMin</pd:from>
+                <pd:to>end</pd:to>
+                <pd:lineType>Default</pd:lineType>
+                <pd:lineColor>-16777216</pd:lineColor>
+                <pd:conditionType>always</pd:conditionType>
+            </pd:transition>
+            <pd:transition>
+                <pd:description>appraiser's count of tasks is greater than (or equal to) saved minimum</pd:description>
+                <pd:from>WaitForReply</pd:from>
+                <pd:to>end</pd:to>
+                <pd:xpathDescription>greater count of tasks</pd:xpathDescription>
+                <pd:lineType>Default</pd:lineType>
+                <pd:lineColor>-16777216</pd:lineColor>
+                <pd:conditionType>xpath</pd:conditionType>
+                <pd:xpath>$WaitForReply/ActivityOutput/body/tasksNumber &gt;= $taskMin/root/value</pd:xpath>
+            </pd:transition>
+            <pd:transition>
+                <pd:description>appraiser's count of tasks is smaller than saved minimum</pd:description>
+                <pd:from>WaitForReply</pd:from>
+                <pd:to>SaveTaskMin</pd:to>
+                <pd:xpathDescription>smaller count of tasks</pd:xpathDescription>
+                <pd:lineType>Default</pd:lineType>
+                <pd:lineColor>-16777216</pd:lineColor>
+                <pd:conditionType>xpath</pd:conditionType>
+                <pd:xpath>$WaitForReply/ActivityOutput/body/tasksNumber &lt; $taskMin/root/value</pd:xpath>
+            </pd:transition>
+            <pd:activity name="WaitForReply">
+                <pd:type>com.tibco.plugin.tibrv.RVSignalInActivity</pd:type>
+                <pd:resourceType>ae.rvpalette.rvSignalInActivity</pd:resourceType>
+                <pd:description>wait for replies from appraisers</pd:description>
+                <pd:x>441</pd:x>
+                <pd:y>180</pd:y>
+                <config>
+                    <_eventTimeout>60000</_eventTimeout>
+                    <wantsValidationForOutput>true</wantsValidationForOutput>
+                    <wantsFiltrationForOutput>true</wantsFiltrationForOutput>
+                    <wantsXMLCompliantFieldNames>true</wantsXMLCompliantFieldNames>
+                    <subject>%%ENV%%.%%AppraisalReplySubject%%</subject>
+                    <sharedChannel>/SharedConnections/RVTransport.rvtransport</sharedChannel>
+                    <xsdString ref="pfx:ApprReply"/>
+                </config>
+                <pd:inputBindings>
+                    <ns2:input/>
+                </pd:inputBindings>
+            </pd:activity>
+            <pd:activity name="SaveTaskMin">
+                <pd:type>com.tibco.pe.core.AssignActivity</pd:type>
+                <pd:resourceType>ae.activities.assignActivity</pd:resourceType>
+                <pd:description>save appraiser with minimal task count</pd:description>
+                <pd:x>588</pd:x>
+                <pd:y>233</pd:y>
+                <config>
+                    <variableName>taskMin</variableName>
+                </config>
+                <pd:inputBindings>
+                    <root>
+                        <confirm_subject>
+                            <xsl:value-of select="$WaitForReply/ActivityOutput/body/confirmSubj"/>
+                        </confirm_subject>
+                        <value>
+                            <xsl:value-of select="$WaitForReply/ActivityOutput/body/tasksNumber"/>
+                        </value>
+                    </root>
+                </pd:inputBindings>
+            </pd:activity>
+        </pd:group>
+        <pd:activity name="InitMin">
+            <pd:type>com.tibco.pe.core.AssignActivity</pd:type>
+            <pd:resourceType>ae.activities.assignActivity</pd:resourceType>
+            <pd:description>init taskMin process variable</pd:description>
+            <pd:x>206</pd:x>
+            <pd:y>181</pd:y>
+            <config>
+                <variableName>taskMin</variableName>
+            </config>
+            <pd:inputBindings>
+                <root>
+                    <confirm_subject>
+                        <xsl:value-of select="&quot;&quot;"/>
+                    </confirm_subject>
+                    <value>
+                        <xsl:value-of select="1000000"/>
+                    </value>
+                </root>
+            </pd:inputBindings>
+        </pd:activity>
+    </pd:group>
+    <pd:activity name="SendApprResult">
+        <pd:type>com.tibco.plugin.jms.JMSQueueSendActivity</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueSendActivity</pd:resourceType>
+        <pd:description>send appraisal value to examination service</pd:description>
+        <pd:x>849</pd:x>
+        <pd:y>168</pd:y>
+        <config>
+            <PermittedMessageType>XML Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>1</maxSessions>
+                <destination>%%ENV%%.%%QueueApprResult%%</destination>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+            <ConnectionReference>/SharedJMSResources/JMSConn.sharedjmscon</ConnectionReference>
+            <ApplicationProperties/>
+            <InDataxsdString ref="pfx:ApprResult"/>
+        </config>
+        <pd:inputBindings>
+            <ns5:ActivityInput>
+                <Body>
+                    <pfx:ApprResult>
+                        <xsl:if test="$SendTaskConfirmation/ActivityOutput/body/customerName">
+                            <customerName>
+                                <xsl:copy-of select="$SendTaskConfirmation/ActivityOutput/body/customerName/@xsi:nil"/>
+                                <xsl:value-of select="$SendTaskConfirmation/ActivityOutput/body/customerName"/>
+                            </customerName>
+                        </xsl:if>
+                        <xsl:if test="$SendTaskConfirmation/ActivityOutput/body/realtyValue">
+                            <realtyValue>
+                                <xsl:copy-of select="$SendTaskConfirmation/ActivityOutput/body/realtyValue/@xsi:nil"/>
+                                <xsl:value-of select="$SendTaskConfirmation/ActivityOutput/body/realtyValue"/>
+                            </realtyValue>
+                        </xsl:if>
+                    </pfx:ApprResult>
+                </Body>
+            </ns5:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>ReceiveApprRequest</pd:from>
+        <pd:to>Critical section</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Critical section</pd:from>
+        <pd:to>SendTaskConfirmation</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>SendTaskConfirmation</pd:from>
+        <pd:to>SendApprResult</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>SendApprResult</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BWSharedResource>
+    <name>JMSApplicationProperties</name>
+    <resourceType>ae.shared.JMSAppPropResource</resourceType>
+    <description>Properties for unique identification of library JMS messages.</description>
+    <config>
+        <Properties>
+            <row>
+                <PropertyName>Part</PropertyName>
+                <Type>string</Type>
+                <Cardinality>optional</Cardinality>
+            </row>
+        </Properties>
+    </config>
+</BWSharedResource>

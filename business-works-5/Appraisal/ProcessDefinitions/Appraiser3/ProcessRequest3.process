@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:ns2="http://www.tibco.com/pe/SignalInActivitySchema" xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:ns1="http://www.tibco.com/pe/DeployedVarsType" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:ns0="www.tibco.com/plugin/Sleep" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx2="http://www.tibco.com/xmlns/ae2xsd/2002/05/Appraisal/AppraisalSchema" xmlns:pfx="http://www.tibco.com/namespaces/tnt/plugins/file/v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <xsd:import namespace="http://www.tibco.com/xmlns/ae2xsd/2002/05/Appraisal/AppraisalSchema" schemaLocation="/AESchemas/Appraisal/AppraisalSchema.aeschema"/>
+    <pd:name>ProcessDefinitions/Appraiser3/ProcessRequest3.process</pd:name>
+    <pd:description>receive request for appraisal and get number of tasks from xml file</pd:description>
+    <pd:startName>AppraisalRequestSub</pd:startName>
+    <pd:startX>0</pd:startX>
+    <pd:startY>0</pd:startY>
+    <pd:returnBindings/>
+    <pd:starter name="AppraisalRequestSub">
+        <pd:type>com.tibco.plugin.tibrv.RVEventSource</pd:type>
+        <pd:resourceType>ae.rvpalette.RVEventSource</pd:resourceType>
+        <pd:description>subscriber for appraisal requests</pd:description>
+        <pd:x>60</pd:x>
+        <pd:y>138</pd:y>
+        <config>
+            <wantsValidationForOutput>true</wantsValidationForOutput>
+            <wantsFiltrationForOutput>true</wantsFiltrationForOutput>
+            <wantsXMLCompliantFieldNames>true</wantsXMLCompliantFieldNames>
+            <wantsRawRVObjectForOutput>false</wantsRawRVObjectForOutput>
+            <subject>%%ENV%%.%%AppraisalRequestSubject%%</subject>
+            <sharedChannel>/SharedConnections/RVTransport.rvtransport</sharedChannel>
+            <xsdString ref="pfx2:ApprRequest"/>
+        </config>
+        <pd:inputBindings/>
+    </pd:starter>
+    <pd:endName>End</pd:endName>
+    <pd:endX>809</pd:endX>
+    <pd:endY>258</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:targetNamespace>http://xmlns.example.com/1322638496965</pd:targetNamespace>
+    <pd:activity name="ReadXMLFile">
+        <pd:type>com.tibco.plugin.file.FileReadActivity</pd:type>
+        <pd:resourceType>ae.activities.FileReadActivity</pd:resourceType>
+        <pd:description>read number of tasks from xml file</pd:description>
+        <pd:x>68</pd:x>
+        <pd:y>257</pd:y>
+        <config>
+            <encoding>text</encoding>
+        </config>
+        <pd:inputBindings>
+            <pfx:ReadActivityInputClass>
+                <fileName>
+                    <xsl:value-of select="$_globalVariables/ns1:GlobalVariables/TaskFile3"/>
+                </fileName>
+            </pfx:ReadActivityInputClass>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="ParseXMLFile">
+        <pd:type>com.tibco.plugin.xml.XMLParseActivity</pd:type>
+        <pd:resourceType>ae.activities.XMLParseActivity</pd:resourceType>
+        <pd:description>parse xml file with number of tasks</pd:description>
+        <pd:x>192</pd:x>
+        <pd:y>255</pd:y>
+        <config>
+            <inputStyle>text</inputStyle>
+            <xsdVersion>default</xsdVersion>
+            <validateOutput>true</validateOutput>
+            <term>
+                <xsd:element name="tasks">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="number" type="xsd:string"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </term>
+        </config>
+        <pd:inputBindings>
+            <xmlString>
+                <xsl:value-of select="$ReadXMLFile/ns:ReadActivityOutputTextClass/fileContent/textContent"/>
+            </xmlString>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="ReplyToAppraisalRequest">
+        <pd:type>com.tibco.plugin.tibrv.RVReplyActivity</pd:type>
+        <pd:resourceType>ae.rvpalette.RVReplyActivity</pd:resourceType>
+        <pd:description>send count of tasks</pd:description>
+        <pd:x>305</pd:x>
+        <pd:y>256</pd:y>
+        <config>
+            <wantsXMLCompliantFieldNames>true</wantsXMLCompliantFieldNames>
+            <eventSource>AppraisalRequestSub</eventSource>
+            <replySubject/>
+            <xsdString ref="pfx2:ApprReply"/>
+        </config>
+        <pd:inputBindings>
+            <ActivityInput>
+                <replySubject>
+                    <xsl:value-of select="$AppraisalRequestSub/ActivityOutput/body/replySubj"/>
+                </replySubject>
+                <body>
+                    <tasksNumber>
+                        <xsl:value-of select="$ParseXMLFile/tasks/number"/>
+                    </tasksNumber>
+                    <confirmSubj>
+                        <xsl:value-of select="concat($_globalVariables/ns1:GlobalVariables/ENV,&quot;.&quot;,$_globalVariables/ns1:GlobalVariables/Appr3ConfirmSubj)"/>
+                    </confirmSubj>
+                </body>
+            </ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:group name="WaitForConfirmation">
+        <pd:type>com.tibco.pe.core.LoopGroup</pd:type>
+        <pd:resourceType>ae.process.group</pd:resourceType>
+        <pd:description>wait a while for task confirmation </pd:description>
+        <pd:x>397</pd:x>
+        <pd:y>72</pd:y>
+        <pd:width>332</pd:width>
+        <pd:height>240</pd:height>
+        <pd:collapsedWidth>57</pd:collapsedWidth>
+        <pd:collapsedHeight>70</pd:collapsedHeight>
+        <pd:groupVariables/>
+        <pd:joinToggle>inherit</pd:joinToggle>
+        <config>
+            <pd:groupType>pickFirstGroup</pd:groupType>
+            <pd:serializable>false</pd:serializable>
+        </config>
+        <pd:inputBindings/>
+        <pd:expanded>true</pd:expanded>
+        <pd:transition>
+            <pd:from>start</pd:from>
+            <pd:to>Timeout</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>start</pd:from>
+            <pd:to>WaitForTaskConfirmation</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Timeout</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>SendAppraisalValue</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>WaitForTaskConfirmation</pd:from>
+            <pd:to>SendAppraisalValue</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:activity name="WaitForTaskConfirmation">
+            <pd:type>com.tibco.plugin.tibrv.RVSignalInActivity</pd:type>
+            <pd:resourceType>ae.rvpalette.rvSignalInActivity</pd:resourceType>
+            <pd:description>wait for confirmation of appraisal task</pd:description>
+            <pd:x>498</pd:x>
+            <pd:y>239</pd:y>
+            <config>
+                <_eventTimeout>60000</_eventTimeout>
+                <wantsValidationForOutput>true</wantsValidationForOutput>
+                <wantsFiltrationForOutput>true</wantsFiltrationForOutput>
+                <wantsXMLCompliantFieldNames>true</wantsXMLCompliantFieldNames>
+                <subject>%%ENV%%.%%Appr3ConfirmSubj%%</subject>
+                <sharedChannel>/SharedConnections/RVTransport.rvtransport</sharedChannel>
+                <xsdString ref="pfx2:ApprDetails"/>
+            </config>
+            <pd:inputBindings>
+                <ns2:input/>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="SendAppraisalValue">
+            <pd:type>com.tibco.plugin.tibrv.RVReplyActivity</pd:type>
+            <pd:resourceType>ae.rvpalette.RVReplyActivity</pd:resourceType>
+            <pd:description>send appraisal of realty value</pd:description>
+            <pd:x>623</pd:x>
+            <pd:y>239</pd:y>
+            <config>
+                <wantsXMLCompliantFieldNames>true</wantsXMLCompliantFieldNames>
+                <eventSource>WaitForTaskConfirmation</eventSource>
+                <xsdString ref="pfx2:ApprResult"/>
+            </config>
+            <pd:inputBindings>
+                <ActivityInput>
+                    <xsl:if test="$WaitForTaskConfirmation/ActivityOutput/replySubject">
+                        <replySubject>
+                            <xsl:value-of select="$WaitForTaskConfirmation/ActivityOutput/replySubject"/>
+                        </replySubject>
+                    </xsl:if>
+                    <body>
+                        <xsl:if test="$WaitForTaskConfirmation/ActivityOutput/body/customerName">
+                            <customerName>
+                                <xsl:copy-of select="$WaitForTaskConfirmation/ActivityOutput/body/customerName/@xsi:nil"/>
+                                <xsl:value-of select="$WaitForTaskConfirmation/ActivityOutput/body/customerName"/>
+                            </customerName>
+                        </xsl:if>
+                        <realtyValue>
+                            <xsl:value-of select="$_globalVariables/ns1:GlobalVariables/ApprValue3"/>
+                        </realtyValue>
+                    </body>
+                </ActivityInput>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="Timeout">
+            <pd:type>com.tibco.plugin.timer.SleepActivity</pd:type>
+            <pd:resourceType>ae.activities.sleep</pd:resourceType>
+            <pd:x>554</pd:x>
+            <pd:y>147</pd:y>
+            <config/>
+            <pd:inputBindings>
+                <ns0:SleepInputSchema>
+                    <IntervalInMillisec>
+                        <xsl:value-of select="15000"/>
+                    </IntervalInMillisec>
+                </ns0:SleepInputSchema>
+            </pd:inputBindings>
+        </pd:activity>
+    </pd:group>
+    <pd:transition>
+        <pd:from>AppraisalRequestSub</pd:from>
+        <pd:to>ReadXMLFile</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>ReadXMLFile</pd:from>
+        <pd:to>ParseXMLFile</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>ParseXMLFile</pd:from>
+        <pd:to>ReplyToAppraisalRequest</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>ReplyToAppraisalRequest</pd:from>
+        <pd:to>WaitForConfirmation</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>WaitForConfirmation</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

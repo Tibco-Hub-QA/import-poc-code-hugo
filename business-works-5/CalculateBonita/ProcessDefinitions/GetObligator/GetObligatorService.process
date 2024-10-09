@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pfx="http://xmlns.example.com/1171360277608" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns="http://www.tibco.com/schemas/GrantingCredit/SharedConnections/Schema1.xsd">
+    <wsdl:import namespace="http://xmlns.example.com/1171360277608" location="/SharedResources/GetObligatorServiceAbstractWSDL.wsdl"/>
+    <pd:name>ProcessDefinitions/GetObligator/GetObligatorService.process</pd:name>
+    <pd:description>Ensure SOAP I/O operation for GetObligator process.</pd:description>
+    <pd:startName>ObligatorName SOAPEventSource</pd:startName>
+    <pd:startX>0</pd:startX>
+    <pd:startY>0</pd:startY>
+    <pd:returnBindings/>
+    <pd:starter name="ObligatorName SOAPEventSource">
+        <pd:type>com.tibco.plugin.soap.SOAPEventSource</pd:type>
+        <pd:resourceType>ae.activities.SOAPEventSourceUI</pd:resourceType>
+        <pd:description>Get input parameters from SOAP for GetObligator process</pd:description>
+        <pd:x>77</pd:x>
+        <pd:y>52</pd:y>
+        <config>
+            <service>pfx:GetObligatorServicePort</service>
+            <wsdlNamespaceRoot>http://xmlns.example.com/1171360277608/GetObligatorServiceOperationImpl</wsdlNamespaceRoot>
+            <operation>GetObligatorServiceOperation</operation>
+            <portAddressPrefix/>
+            <operationStyle>document</operationStyle>
+            <soapUse>literal</soapUse>
+            <embedWsdlComponents>true</embedWsdlComponents>
+            <embedSchemaComponents>true</embedSchemaComponents>
+            <soapAction>/ProcessDefinitions/GetObligator/GetObligatorService</soapAction>
+            <sharedChannel>/SharedConnections/CalculateBonitaSOAPHTTPConnection.sharedhttp</sharedChannel>
+        </config>
+        <pd:inputBindings/>
+    </pd:starter>
+    <pd:endName>End</pd:endName>
+    <pd:endDescription>End of process</pd:endDescription>
+    <pd:endX>426</pd:endX>
+    <pd:endY>44</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:activity name="ObligatorInfo SOAPSendReply">
+        <pd:type>com.tibco.plugin.soap.SOAPSendReplyActivity</pd:type>
+        <pd:resourceType>ae.activities.SOAPSendReplyUI</pd:resourceType>
+        <pd:description>Send SOAP reply with GetObligator result</pd:description>
+        <pd:x>321</pd:x>
+        <pd:y>52</pd:y>
+        <config>
+            <eventSource>ObligatorName SOAPEventSource</eventSource>
+        </config>
+        <pd:inputBindings>
+            <outputMessage>
+                <xsl:copy-of select="$GetObligator/ns:Obligator"/>
+            </outputMessage>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="GetObligator">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:description>Read informations about obligator loan from xml file</pd:description>
+        <pd:x>200</pd:x>
+        <pd:y>44</pd:y>
+        <config>
+            <processName>/ProcessDefinitions/GetObligator/GetObligator.process</processName>
+        </config>
+        <pd:inputBindings>
+            <ns:Name>
+                <xsl:value-of select="$ObligatorName-SOAPEventSource/inputMessage/ns:Name"/>
+            </ns:Name>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>ObligatorName SOAPEventSource</pd:from>
+        <pd:to>GetObligator</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>GetObligator</pd:from>
+        <pd:to>ObligatorInfo SOAPSendReply</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>ObligatorInfo SOAPSendReply</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

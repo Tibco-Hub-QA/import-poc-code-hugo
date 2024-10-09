@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BWSharedResource>
+    <name>iProcessPantherBWServiceAgent</name>
+    <resourceType>ae.shared.iProcessServiceAgent</resourceType>
+    <config>
+        <class>com.tibco.plugin.staffware.iProcessServiceAgentResource</class>
+        <AcknowledgeMode>1</AcknowledgeMode>
+        <MaxSessions>1</MaxSessions>
+        <JMSConnection>/SharedResources/Connection/iProcess.sharedjmscon</JMSConnection>
+        <DestinationQueue>%%PantherBW/JMSConnection/JMSDestinationQueue%%</DestinationQueue>
+        <SelectedSubProcess>
+            <row>
+                <SubProcessDisplayNameCol>/PantherBW/ProcessDefinitions/BusinessLogic/GetDate</SubProcessDisplayNameCol>
+                <SubProcessHiddenNameCol>/PantherBW/ProcessDefinitions/BusinessLogic/GetDate.process</SubProcessHiddenNameCol>
+            </row>
+            <row>
+                <SubProcessDisplayNameCol>/PantherBW/ProcessDefinitions/BusinessLogic/SendEmail</SubProcessDisplayNameCol>
+                <SubProcessHiddenNameCol>/PantherBW/ProcessDefinitions/BusinessLogic/SendEmail.process</SubProcessHiddenNameCol>
+            </row>
+            <row>
+                <SubProcessDisplayNameCol>/PantherBW/ProcessDefinitions/BusinessLogic/TriggerCourtProcess</SubProcessDisplayNameCol>
+                <SubProcessHiddenNameCol>/PantherBW/ProcessDefinitions/BusinessLogic/TriggerCourtProcess.process</SubProcessHiddenNameCol>
+            </row>
+        </SelectedSubProcess>
+    </config>
+</BWSharedResource>

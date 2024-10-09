@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BWSharedResource>
+    <name>iProcess</name>
+    <resourceType>ae.shared.JMSConnectionKey</resourceType>
+    <config>
+        <NamingEnvironment>
+            <UseJNDI>true</UseJNDI>
+            <ProviderURL>tcp://localhost:7222</ProviderURL>
+            <NamingURL>%%PantherBW/JMSConnection/JNDIContextURL%%</NamingURL>
+            <NamingInitialContextFactory>%%PantherBW/JMSConnection/JNDIContextFactory%%</NamingInitialContextFactory>
+            <TopicFactoryName>%%PantherBW/JMSConnection/TopicConnectionFactory%%</TopicFactoryName>
+            <QueueFactoryName>%%PantherBW/JMSConnection/QueueConnectionFactory%%</QueueFactoryName>
+            <NamingPrincipal>%%PantherBW/JMSConnection/JNDIUserName%%</NamingPrincipal>
+            <NamingCredential>%%PantherBW/JMSConnection/JNDIPassword%%</NamingCredential>
+        </NamingEnvironment>
+        <ConnectionAttributes>
+            <username>%%PantherBW/JMSConnection/UserName%%</username>
+            <password>%%PantherBW/JMSConnection/Password%%</password>
+            <clientID/>
+            <autoGenClientID>true</autoGenClientID>
+        </ConnectionAttributes>
+        <UseXACF>false</UseXACF>
+    </config>
+</BWSharedResource>

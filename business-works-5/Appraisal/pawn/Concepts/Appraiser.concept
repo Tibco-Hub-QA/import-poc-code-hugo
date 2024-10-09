@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<concept icon="" name="Appraiser" description="" guid="1179732501312-11785022" bindings="" namespace="" folder="/pawn/Concepts/" super="" isAScorecard="false">
+    <lastModified/>
+    <hiddenProperties/>
+    <propertyDefinitions>
+        <PropertyDefinition name="customerName" guid="1179735115750-1002223604" type="7" conceptType="/pawn/Concepts/apprReqConcept" isArray="false" policy="0" history="1" value="" transitive="false" super="" order="0">
+            <hiddenAttributes/>
+            <instances/>
+            <equivalents/>
+            <disjoints/>
+        </PropertyDefinition>
+    </propertyDefinitions>
+    <subConcepts>
+        <concept>/pawn/Concepts/Appraiser1</concept>
+        <concept>/pawn/Concepts/Appraiser2</concept>
+    </subConcepts>
+    <instances/>
+    <views>
+        <view>/pawn/Concepts/ConceptView</view>
+    </views>
+    <referringProps/>
+    <referringRuleSets/>
+</concept>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<conceptView name="ConceptView" description="each Appraiser references appraisal request which is handled by it" folder="/pawn/Concepts/">
+    <references>
+        <conceptReference entityPath="/pawn/Concepts/Appraiser1" x="123" y="107"/>
+        <conceptReference entityPath="/pawn/Concepts/Appraiser2" x="124" y="222"/>
+        <conceptReference entityPath="/pawn/Concepts/Appraiser" x="314" y="163"/>
+        <conceptReference entityPath="/pawn/Concepts/apprReqConcept" x="547" y="163"/>
+    </references>
+    <links>
+        <conceptLink name="link" from="/pawn/Concepts/Appraiser1" to="/pawn/Concepts/Appraiser" type="0"/>
+        <conceptLink name="link_1" from="/pawn/Concepts/Appraiser2" to="/pawn/Concepts/Appraiser" type="0"/>
+        <conceptLink name="link_2" from="/pawn/Concepts/Appraiser" to="/pawn/Concepts/apprReqConcept" type="1" propertyName="customerName" propertyType="false"/>
+    </links>
+</conceptView>

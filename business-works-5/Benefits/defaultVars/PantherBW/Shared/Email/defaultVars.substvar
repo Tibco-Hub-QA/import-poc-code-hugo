@@ -1,0 +1,29 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<repository xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://www.tibco.com/xmlns/repo/types/2002">
+	<globalVariables>
+		<globalVariable>
+			<name>SMTP</name>
+			<value>mail.pikeelectronic.com</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1243350091312</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>from</name>
+			<value>z@z.cz</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1243350091390</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>to</name>
+			<value>g@g.cz</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1243350091484</modTime>
+		</globalVariable>
+	</globalVariables>
+</repository>

@@ -1,0 +1,45 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<repository xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance" xmlns = "http://www.tibco.com/xmlns/repo/types/2002">
+	<globalVariables>
+		<globalVariable>
+			<name>IPAddress</name>
+			<value>192.168.3.209</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1243335825140</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>UDPPort</name>
+			<value>28001</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>Integer</type>
+			<modTime>1243346637156</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>objectsServerName</name>
+			<value>TIBCOIPE</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1243346423828</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>password</name>
+			<value>swadmin</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1243346423968</modTime>
+		</globalVariable>
+		<globalVariable>
+			<name>username</name>
+			<value>swadmin</value>
+			<deploymentSettable>true</deploymentSettable>
+			<serviceSettable>false</serviceSettable>
+			<type>String</type>
+			<modTime>1243346424250</modTime>
+		</globalVariable>
+	</globalVariables>
+</repository>

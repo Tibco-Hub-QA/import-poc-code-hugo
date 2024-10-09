@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/pe/DeployedVarsType" xmlns:pfx="http://www.tibco.com/schemas/AccountState/SharedResources/Schema.xsd" xmlns:ns1="http://www.tibco.com/namespaces/tnt/plugins/file" xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/file/v2" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:import namespace="http://www.tibco.com/schemas/AccountState/SharedResources/Schema.xsd" schemaLocation="/SharedResources/AccountsXSD.xsd"/>
+    <pd:name>ProcessDefinitions/GetAccountState/GetAccountState.process</pd:name>
+    <pd:description>Load AccountState of concrete user's account from xml file</pd:description>
+    <pd:startName>Start</pd:startName>
+    <pd:startDescription>Start process with account owner name.</pd:startDescription>
+    <pd:startType>
+        <xsd:element name="root">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element ref="pfx:Name"/>
+                    <xsd:element name="ID" type="xsd:int"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:startType>
+    <pd:startX>64</pd:startX>
+    <pd:startY>54</pd:startY>
+    <pd:returnBindings>
+        <xsl:copy-of select="$Schema0/pfx:Account"/>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endDescription>End of process and return Account node</pd:endDescription>
+    <pd:endType ref="pfx:Account"/>
+    <pd:endX>1027</pd:endX>
+    <pd:endY>109</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables>
+        <Schema0 ref="pfx:Account"/>
+    </pd:processVariables>
+    <pd:activity name="ReadFile Accounts">
+        <pd:type>com.tibco.plugin.file.FileReadActivity</pd:type>
+        <pd:resourceType>ae.activities.FileReadActivity</pd:resourceType>
+        <pd:description>Read file as text</pd:description>
+        <pd:x>187</pd:x>
+        <pd:y>54</pd:y>
+        <config>
+            <encoding>text</encoding>
+        </config>
+        <pd:inputBindings>
+            <ns2:ReadActivityInputClass>
+                <fileName>
+                    <xsl:value-of select="$_globalVariables/ns:GlobalVariables/DefaultAccountsFile"/>
+                </fileName>
+            </ns2:ReadActivityInputClass>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="ParseXML AccountsList">
+        <pd:type>com.tibco.plugin.xml.XMLParseActivity</pd:type>
+        <pd:resourceType>ae.activities.XMLParseActivity</pd:resourceType>
+        <pd:description>Parse text input to xml according to Accounts xsd schema</pd:description>
+        <pd:x>322</pd:x>
+        <pd:y>62</pd:y>
+        <config>
+            <inputStyle>text</inputStyle>
+            <xsdVersion>default</xsdVersion>
+            <validateOutput>true</validateOutput>
+            <term ref="pfx:AccountsList"/>
+        </config>
+        <pd:inputBindings>
+            <xmlString>
+                <xsl:value-of select="$ReadFile-Accounts/ns1:ReadActivityOutputTextClass/fileContent/textContent"/>
+            </xmlString>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Assign NullAccount">
+        <pd:type>com.tibco.pe.core.AssignActivity</pd:type>
+        <pd:resourceType>ae.activities.assignActivity</pd:resourceType>
+        <pd:description>Set default result as null Account structure</pd:description>
+        <pd:x>460</pd:x>
+        <pd:y>54</pd:y>
+        <config>
+            <variableName>Schema0</variableName>
+        </config>
+        <pd:inputBindings>
+            <pfx:Account>
+                <pfx:Number>
+                    <xsl:value-of select="&quot;&quot;"/>
+                </pfx:Number>
+                <pfx:Name>
+                    <xsl:value-of select="&quot;&quot;"/>
+                </pfx:Name>
+                <pfx:Value>
+                    <xsl:value-of select="0"/>
+                </pfx:Value>
+                <pfx:MonthIncrement>
+                    <xsl:value-of select="0"/>
+                </pfx:MonthIncrement>
+                <pfx:Password>
+                    <xsl:value-of select="&quot;&quot;"/>
+                </pfx:Password>
+            </pfx:Account>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:group name="CycleGroup">
+        <pd:type>com.tibco.pe.core.LoopGroup</pd:type>
+        <pd:resourceType>ae.process.group</pd:resourceType>
+        <pd:description>Cycle group for search of account node with input name</pd:description>
+        <pd:x>532</pd:x>
+        <pd:y>8</pd:y>
+        <pd:width>370</pd:width>
+        <pd:height>208</pd:height>
+        <pd:collapsedWidth>57</pd:collapsedWidth>
+        <pd:collapsedHeight>70</pd:collapsedHeight>
+        <pd:groupVariables/>
+        <pd:joinToggle>inherit</pd:joinToggle>
+        <config>
+            <pd:groupType>repeat</pd:groupType>
+            <serializable>false</serializable>
+            <pd:indexSlot>AccountIndex</pd:indexSlot>
+            <pd:activityOutputName/>
+            <pd:repeatCondition>($AccountIndex &gt;= $ParseXML-AccountsList/pfx:AccountsList/@Count) or 
+($ParseXML-AccountsList/pfx:AccountsList/pfx:Account[$AccountIndex]/pfx:Name =$Start/pfx:Name)</pd:repeatCondition>
+            <pd:accumulateOutput>false</pd:accumulateOutput>
+        </config>
+        <pd:inputBindings/>
+        <pd:expanded>true</pd:expanded>
+        <pd:transition>
+            <pd:from>start</pd:from>
+            <pd:to>GetAccount</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>UpdateCustomerDB</pd:from>
+            <pd:to>end</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>GetAccount</pd:from>
+            <pd:to>Assign ActualAccount</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:transition>
+            <pd:from>Assign ActualAccount</pd:from>
+            <pd:to>UpdateCustomerDB</pd:to>
+            <pd:lineType>Default</pd:lineType>
+            <pd:lineColor>-16777216</pd:lineColor>
+            <pd:conditionType>always</pd:conditionType>
+        </pd:transition>
+        <pd:activity name="Assign ActualAccount">
+            <pd:type>com.tibco.pe.core.AssignActivity</pd:type>
+            <pd:resourceType>ae.activities.assignActivity</pd:resourceType>
+            <pd:description>Assign Account data when the owner name and input name are same</pd:description>
+            <pd:x>705</pd:x>
+            <pd:y>132</pd:y>
+            <config>
+                <variableName>Schema0</variableName>
+            </config>
+            <pd:inputBindings>
+                <xsl:copy-of select="$ParseXML-AccountsList/pfx:AccountsList[$AccountIndex]/pfx:Account"/>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="GetAccount">
+            <pd:type>com.tibco.plugin.jdbc.JDBCQueryActivity</pd:type>
+            <pd:resourceType>ae.activities.JDBCQueryActivity</pd:resourceType>
+            <pd:x>603</pd:x>
+            <pd:y>122</pd:y>
+            <config>
+                <timeout>10</timeout>
+                <commit>false</commit>
+                <maxRows>100</maxRows>
+                <emptyStrAsNil>false</emptyStrAsNil>
+                <jdbcSharedConfig>/SharedConnections/Tibco.sharedjdbc</jdbcSharedConfig>
+                <statement>SELECT ID,  NAME,  VALUE,  MONTH_INCREMENT 
+FROM  ACCOUNTS
+WHERE ID = ?</statement>
+                <processInSubsets>true</processInSubsets>
+                <Prepared_Param_DataType>
+                    <parameter>
+                        <parameterName>id</parameterName>
+                        <dataType>INTEGER</dataType>
+                    </parameter>
+                </Prepared_Param_DataType>
+            </config>
+            <pd:inputBindings>
+                <jdbcQueryActivityInput>
+                    <subsetSize>
+                        <xsl:value-of select="1"/>
+                    </subsetSize>
+                </jdbcQueryActivityInput>
+            </pd:inputBindings>
+        </pd:activity>
+        <pd:activity name="UpdateCustomerDB">
+            <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+            <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+            <pd:x>812</pd:x>
+            <pd:y>121</pd:y>
+            <config>
+                <timeout>10</timeout>
+                <commit>false</commit>
+                <emptyStrAsNil>false</emptyStrAsNil>
+                <jdbcSharedConfig>/SharedConnections/SharedTibco.sharedjdbc</jdbcSharedConfig>
+                <statement>UPDATE CUSTOMER
+SET DATE = ?
+WHERE ID = ?</statement>
+                <Prepared_Param_DataType>
+                    <parameter>
+                        <parameterName>date_now</parameterName>
+                        <dataType>VARCHAR</dataType>
+                    </parameter>
+                    <parameter>
+                        <parameterName>id</parameterName>
+                        <dataType>INTEGER</dataType>
+                    </parameter>
+                </Prepared_Param_DataType>
+            </config>
+            <pd:inputBindings>
+                <jdbcUpdateActivityInput>
+                    <date_now>
+                        <xsl:value-of select="current-dateTime()"/>
+                    </date_now>
+                    <id>
+                        <xsl:value-of select="$Start/root/ID"/>
+                    </id>
+                </jdbcUpdateActivityInput>
+            </pd:inputBindings>
+        </pd:activity>
+    </pd:group>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>ReadFile Accounts</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>ReadFile Accounts</pd:from>
+        <pd:to>ParseXML AccountsList</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>ParseXML AccountsList</pd:from>
+        <pd:to>Assign NullAccount</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Assign NullAccount</pd:from>
+        <pd:to>CycleGroup</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>CycleGroup</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

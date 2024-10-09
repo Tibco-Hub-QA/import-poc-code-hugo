@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<concept icon="" name="creditReqConcept" description="" guid="1173797129010-1155304439" bindings="" namespace="" folder="/pawn/Concepts/" super="" isAScorecard="false" rootStateMachineGUID="1173797629099-1333992821">
+    <lastModified/>
+    <hiddenProperties/>
+    <propertyDefinitions>
+        <PropertyDefinition name="customerName" guid="1173797530377-1513401056" type="0" conceptType="" isArray="false" policy="0" history="1" value="" transitive="false" super="" order="0">
+            <hiddenAttributes/>
+            <instances/>
+            <equivalents/>
+            <disjoints/>
+        </PropertyDefinition>
+        <PropertyDefinition name="realtyDetail" guid="1173797530377-1918365179" type="0" conceptType="" isArray="false" policy="0" history="1" value="" transitive="false" super="" order="1">
+            <hiddenAttributes/>
+            <instances/>
+            <equivalents/>
+            <disjoints/>
+        </PropertyDefinition>
+        <PropertyDefinition name="pawn" guid="1173797530377-2143142098" type="4" conceptType="" isArray="false" policy="0" history="1" value="" transitive="false" super="" order="2">
+            <hiddenAttributes/>
+            <instances/>
+            <equivalents/>
+            <disjoints/>
+        </PropertyDefinition>
+    </propertyDefinitions>
+    <subConcepts/>
+    <instances/>
+    <views/>
+    <referringProps/>
+    <referringRuleSets>
+        <referringRuleSet path="/pawn/Concepts/creditReqConcept">
+            <referringRule>Classify_timeoutAction</referringRule>
+            <referringRule>Classify_End_entryAction</referringRule>
+            <referringRule>Classify_Start_exitAction</referringRule>
+            <referringRule>Classify_NeedsAppraisal_timeoutAction</referringRule>
+            <referringRule>Classify_NeedsAppraisal_entryAction</referringRule>
+            <referringRule>Classify_NeedsAppraisal_exitAction</referringRule>
+            <referringRule>Classify_WithoutAppraisal_timeoutAction</referringRule>
+            <referringRule>Classify_WithoutAppraisal_entryAction</referringRule>
+            <referringRule>Classify_WithoutAppraisal_exitAction</referringRule>
+            <referringRule>Classify_Transition</referringRule>
+            <referringRule>Classify_Transition_2</referringRule>
+            <referringRule>Classify_Transition_1</referringRule>
+            <referringRule>Classify_Transition_3</referringRule>
+        </referringRuleSet>
+    </referringRuleSets>
+    <stateMachines>
+        <StateMachine icon="" name="Classify" description="" guid="1173797629099-1333992821" bindings="" namespace="" x="0" y="0" width="0" height="0" timeoutUnits="1">
+            <lastModified/>
+            <hiddenProperties/>
+            <rootState>
+                <StateComposite icon="" name="RootState" description="" guid="1173797629239-251415236" bindings="" namespace="" x="0" y="0" width="0" height="0" timeoutUnits="1" internalTransitionRuleName="false" timeoutPolicy="0" timeoutMilliseconds="0" isConcurrentState="false">
+                    <lastModified/>
+                    <hiddenProperties/>
+                    <timeoutActionName>
+                        <rule icon="" name="Classify_timeoutAction" description="" guid="1174321226561-1245472150" bindings="" namespace="" isAFunction="false" isAConditionFunction="false" compilationStatus="-1">
+                            <lastModified/>
+                            <hiddenProperties/>
+                            <priority>5</priority>
+                            <testInterval>-1</testInterval>
+                            <startTime>-1</startTime>
+                            <doesRequeue>false</doesRequeue>
+                            <maxRules>1</maxRules>
+                            <fwdChain>true</fwdChain>
+                            <bwdChain>false</bwdChain>
+                            <declarations>
+                                <declarations identifier="creditreqconcept" entity="/pawn/Concepts/creditReqConcept"/>
+                            </declarations>
+                            <condition/>
+                            <action/>
+                            <requeueVars/>
+                            <template/>
+                            <author/>
+                        </rule>
+                    </timeoutActionName>
+                    <timeoutExpressionName>
+                        <ruleFunction icon="" name="Classify_timeoutExpression" description="" guid="1174321226571-438880366" bindings="" namespace="" folder="/pawn/Concepts/">
+                            <lastModified/>
+                            <hiddenProperties/>
+                            <actionOnly>false</actionOnly>
+                            <returnType>int</returnType>
+                            <arguments>
+                                <argument identifier="creditreqconcept" type="/pawn/Concepts/creditReqConcept"/>
+                            </arguments>
+                            <body>return 0;</body>
+                        </ruleFunction>
+                    </timeoutExpressionName>
+                    <elements>
+                        <StateSimple icon="" name="WithoutAppraisal" description="" guid="1173797752987-265132959" bindings="" namespace="" x="303" y="140" width="0" height="0" timeoutUnits="1" internalTransitionRuleName="false" timeoutPolicy="0">
+                            <lastModified/>
+                            <hiddenProperties/>
+                            <entryActionName>
+                                <rule icon="" name="Classify_WithoutAppraisal_entryAction" description="" guid="1174321226571-1838529976" bindings="" namespace="" isAFunction="false" isAConditionFunction="false" compilationStatus="-1">
+                                    <lastModified/>
+                                    <hiddenProperties/>
+                                    <priority>5</priority>
+                                    <testInterval>-1</testInterval>
+                                    <startTime>-1</startTime>
+                                    <doesRequeue>false</doesRequeue>
+                                    <maxRules>1</maxRules>
+                                    <fwdChain>true</fwdChain>
+                                    <bwdChain>false</bwdChain>
+                                    <declarations>
+                                        <declarations identifier="creditreqconcept" entity="/pawn/Concepts/creditReqConcept"/>
+                                    </declarations>
+                                    <condition/>
+                                    <action/>
+                                    <requeueVars/>
+                                    <template/>
+                                    <author/>
+                                </rule>
+                            </entryActionName>
+                            <exitActionName>
+                                <rule icon="" name="Classify_WithoutAppraisal_exitAction" description="" guid="1174321226571-1470737851" bindings="" namespace="" isAFunction="false" isAConditionFunction="false" compilationStatus="-1">
+                                    <lastModified/>
+                                    <hiddenProperties/>
+                                    <priority>5</priority>
+                                    <testInterval>-1</testInterval>
+                                    <startTime>-1</startTime>
+                                    <doesRequeue>false</doesRequeue>
+                                    <maxRules>1</maxRules>
+                                    <fwdChain>true</fwdChain>
+                                    <bwdChain>false</bwdChain>
+                                    <declarations>
+                                        <declarations identifier="creditreqconcept" entity="/pawn/Concepts/creditReqConcept"/>
+                                    </declarations>
+                                    <condition/>
+                                    <action/>
+                                    <requeueVars/>
+                                    <template/>
+                                    <author/>
+                                </rule>
+                            </exitActionName>
+                            <timeoutActionName>
+                                <rule icon="" name="Classify_WithoutAppraisal_timeoutAction" description="" guid="1174321226571-961780483" bindings="" namespace="" isAFunction="false" isAConditionFunction="false" compilationStatus="-1">
+                                    <lastModified/>
+                                    <hiddenProperties/>
+                                    <priority>5</priority>
+                                    <testInterval>-1</testInterval>
+                                    <startTime>-1</startTime>
+                                    <doesRequeue>false</doesRequeue>
+                                    <maxRules>1</maxRules>
+                                    <fwdChain>true</fwdChain>
+                                    <bwdChain>false</bwdChain>
+                                    <declarations>
+                                        <declarations identifier="creditreqconcept" entity="/pawn/Concepts/creditReqConcept"/>
+                                    </declarations>
+                                    <condition/>
+                                    <action/>
+                                    <requeueVars/>
+                                    <template/>
+                                    <author/>
+                                </rule>
+                            </timeoutActionName>
+                            <timeoutExpressionName>
+                                <ruleFunction icon="" name="Classify_WithoutAppraisal_timeoutExpression" description="" guid="1174321226571-804427125" bindings="" namespace="" folder="/pawn/Concepts/">
+                                    <lastModified/>
+                                    <hiddenProperties/>
+                                    <actionOnly>false</actionOnly>
+                                    <returnType>int</returnType>
+                                    <arguments/>
+                                    <body>return 0;</body>
+                                </ruleFunction>
+                            </timeoutExpressionName>
+                        </StateSimple>
+                        <StateSimple icon="" name="NeedsAppraisal" description="" guid="1173797745216-2088791849" bindings="" namespace="" x="300" y="33" width="0" height="0" timeoutUnits="1" internalTransitionRuleName="false" timeoutPolicy="0">
+                            <lastModified/>
+                            <hiddenProperties/>
+                            <entryActionName>
+                                <rule icon="" name="Classify_NeedsAppraisal_entryAction" description="" guid="1174321226571-1770338532" bindings="" namespace="" isAFunction="false" isAConditionFunction="false" compilationStatus="-1">
+                                    <lastModified/>
+                                    <hiddenProperties/>
+                                    <priority>5</priority>
+                                    <testInterval>-1</testInterval>
+                                    <startTime>-1</startTime>
+                                    <doesRequeue>false</doesRequeue>
+                                    <maxRules>1</maxRules>
+                                    <fwdChain>true</fwdChain>
+                                    <bwdChain>false</bwdChain>
+                                    <declarations>
+                                        <declarations identifier="creditreqconcept" entity="/pawn/Concepts/creditReqConcept"/>
+                                    </declarations>
+                                    <condition/>
+                                    <action/>
+                                    <requeueVars/>
+                                    <template/>
+                                    <author/>
+                                </rule>
+                            </entryActionName>
+                            <exitActionName>
+                                <rule icon="" name="Classify_NeedsAppraisal_exitAction" description="" guid="1174321226571-2014008341" bindings="" namespace="" isAFunction="false" isAConditionFunction="false" compilationStatus="-1">
+                                    <lastModified/>
+                                    <hiddenProperties/>
+                                    <priority>5</priority>
+                                    <testInterval>-1</testInterval>
+                                    <startTime>-1</startTime>
+                                    <doesRequeue>false</doesRequeue>
+                                    <maxRules>1</maxRules>
+                                    <fwdChain>true</fwdChain>
+                                    <bwdChain>false</bwdChain>
+                                    <declarations>
+                                        <declarations identifier="creditreqconcept" entity="/pawn/Concepts/creditReqConcept"/>
+                                    </declarations>
+                                    <condition/>
+                                    <action/>
+                                    <requeueVars/>
+                                    <template/>
+                                    <author/>
+                                </rule>
+                            </exitActionName>
+                            <timeoutActionName>
+                                <rule icon="" name="Classify_NeedsAppraisal_timeoutAction" description="" guid="1174321226571-1105938586" bindings="" namespace="" isAFunction="false" isAConditionFunction="false" compilationStatus="-1">
+                                    <lastModified/>
+                                    <hiddenProperties/>
+                                    <priority>5</priority>
+                                    <testInterval>-1</testInterval>
+                                    <startTime>-1</startTime>
+                                    <doesRequeue>false</doesRequeue>
+                                    <maxRules>1</maxRules>
+                                    <fwdChain>true</fwdChain>
+                                    <bwdChain>false</bwdChain>
+                                    <declarations>
+                                        <declarations identifier="creditreqconcept" entity="/pawn/Concepts/creditReqConcept"/>
+                                    </declarations>
+                                    <condition/>
+                                    <action/>
+                                    <requeueVars/>
+                                    <template/>
+                                    <author/>
+                                </rule>
+                            </timeoutActionName>
+                            <timeoutExpressionName>
+                                <ruleFunction icon="" name="Classify_NeedsAppraisal_timeoutExpression" description="" guid="1174321226571-1691442912" bindings="" namespace="" folder="/pawn/Concepts/">
+                                    <lastModified/>
+                                    <hiddenProperties/>
+                                    <actionOnly>false</actionOnly>
+                                    <returnType>int</returnType>
+                                    <arguments/>
+                                    <body>return 0;</body>
+                                </ruleFunction>
+                            </timeoutExpressionName>
+                        </StateSimple>
+                        <StateEnd icon="" name="End" description="" guid="1173797629259-848014095" bindings="" namespace="" x="460" y="33" width="0" height="0" timeoutUnits="1" internalTransitionRuleName="false" timeoutPolicy="0">
+                            <lastModified/>
+                            <hiddenProperties/>
+                            <entryActionName>
+                                <rule icon="" name="Classify_End_entryAction" description="" guid="1174321226571-1429725987" bindings="" namespace="" isAFunction="false" isAConditionFunction="false" compilationStatus="-1">
+                                    <lastModified/>
+                                    <hiddenProperties/>
+                                    <priority>5</priority>
+                                    <testInterval>-1</testInterval>
+                                    <startTime>-1</startTime>
+                                    <doesRequeue>false</doesRequeue>
+                                    <maxRules>1</maxRules>
+                                    <fwdChain>true</fwdChain>
+                                    <bwdChain>false</bwdChain>
+                                    <declarations>
+                                        <declarations identifier="creditreqconcept" entity="/pawn/Concepts/creditReqConcept"/>
+                                    </declarations>
+                                    <condition/>
+                                    <action/>
+                                    <requeueVars/>
+                                    <template/>
+                                    <author/>
+                                </rule>
+                            </entryActionName>
+                            <timeoutExpressionName>
+                                <ruleFunction icon="" name="creditReqConcept" description="" guid="1174321226571-1384619706" bindings="" namespace="" folder="/pawn/Concepts/">
+                                    <lastModified/>
+                                    <hiddenProperties/>
+                                    <actionOnly>false</actionOnly>
+                                    <returnType>int</returnType>
+                                    <arguments/>
+                                    <body>return 0;</body>
+                                </ruleFunction>
+                            </timeoutExpressionName>
+                        </StateEnd>
+                        <StateStart icon="" name="Start" description="" guid="1173797629249-375773980" bindings="" namespace="" x="133" y="33" width="0" height="0" timeoutUnits="1" internalTransitionRuleName="false" timeoutPolicy="0">
+                            <lastModified/>
+                            <hiddenProperties/>
+                            <exitActionName>
+                                <rule icon="" name="Classify_Start_exitAction" description="" guid="1174321226571-1390430653" bindings="" namespace="" isAFunction="false" isAConditionFunction="false" compilationStatus="-1">
+                                    <lastModified/>
+                                    <hiddenProperties/>
+                                    <priority>5</priority>
+                                    <testInterval>-1</testInterval>
+                                    <startTime>-1</startTime>
+                                    <doesRequeue>false</doesRequeue>
+                                    <maxRules>1</maxRules>
+                                    <fwdChain>true</fwdChain>
+                                    <bwdChain>false</bwdChain>
+                                    <declarations>
+                                        <declarations identifier="creditreqconcept" entity="/pawn/Concepts/creditReqConcept"/>
+                                    </declarations>
+                                    <condition/>
+                                    <action/>
+                                    <requeueVars/>
+                                    <template/>
+                                    <author/>
+                                </rule>
+                            </exitActionName>
+                            <timeoutExpressionName>
+                                <ruleFunction icon="" name="creditReqConcept" description="" guid="1174321226571-2027436810" bindings="" namespace="" folder="/pawn/Concepts/">
+                                    <lastModified/>
+                                    <hiddenProperties/>
+                                    <actionOnly>false</actionOnly>
+                                    <returnType>int</returnType>
+                                    <arguments/>
+                                    <body>return 0;</body>
+                                </ruleFunction>
+                            </timeoutExpressionName>
+                        </StateStart>
+                    </elements>
+                </StateComposite>
+            </rootState>
+            <stateTransitions>
+                <StateTransition icon="" name="Transition_3" description="" guid="1173797842786-647357732" bindings="" namespace="" x="0" y="0" width="0" height="0" timeoutUnits="1" lineColor="0" linePatternWidth="1.0" linePatternCap="2" linePatternJoin="0" toState="1173797629259-848014095" fromState="1173797752987-265132959" isLambda="false">
+                    <lastModified/>
+                    <hiddenProperties/>
+                    <guardRuleGUID>
+                        <rule icon="" name="Classify_Transition_3" description="" guid="1174321226581-1425862409" bindings="" namespace="" isAFunction="false" isAConditionFunction="false" compilationStatus="0">
+                            <lastModified/>
+                            <hiddenProperties/>
+                            <priority>5</priority>
+                            <testInterval>-1</testInterval>
+                            <startTime>-1</startTime>
+                            <doesRequeue>false</doesRequeue>
+                            <maxRules>1</maxRules>
+                            <fwdChain>true</fwdChain>
+                            <bwdChain>false</bwdChain>
+                            <declarations>
+                                <declarations identifier="creditreqconcept" entity="/pawn/Concepts/creditReqConcept"/>
+                            </declarations>
+                            <condition>1 == 2;</condition>
+                            <action/>
+                            <requeueVars/>
+                            <template/>
+                            <author/>
+                        </rule>
+                    </guardRuleGUID>
+                </StateTransition>
+                <StateTransition icon="" name="Transition_2" description="" guid="1173797840493-915173290" bindings="" namespace="" x="0" y="0" width="0" height="0" timeoutUnits="1" lineColor="0" linePatternWidth="1.0" linePatternCap="2" linePatternJoin="0" label="no pawn" toState="1173797752987-265132959" fromState="1173797629249-375773980" isLambda="false">
+                    <lastModified/>
+                    <hiddenProperties/>
+                    <guardRuleGUID>
+                        <rule icon="" name="Classify_Transition_2" description="" guid="1174321226581-827178207" bindings="" namespace="" isAFunction="false" isAConditionFunction="false" compilationStatus="0">
+                            <lastModified/>
+                            <hiddenProperties/>
+                            <priority>5</priority>
+                            <testInterval>-1</testInterval>
+                            <startTime>-1</startTime>
+                            <doesRequeue>false</doesRequeue>
+                            <maxRules>1</maxRules>
+                            <fwdChain>true</fwdChain>
+                            <bwdChain>false</bwdChain>
+                            <declarations>
+                                <declarations identifier="creditreqconcept" entity="/pawn/Concepts/creditReqConcept"/>
+                            </declarations>
+                            <condition>creditreqconcept.pawn == false;</condition>
+                            <action/>
+                            <requeueVars/>
+                            <template/>
+                            <author/>
+                        </rule>
+                    </guardRuleGUID>
+                </StateTransition>
+                <StateTransition icon="" name="Transition_1" description="" guid="1173797838109-513769570" bindings="" namespace="" x="0" y="0" width="0" height="0" timeoutUnits="1" lineColor="0" linePatternWidth="1.0" linePatternCap="2" linePatternJoin="0" toState="1173797629259-848014095" fromState="1173797745216-2088791849" isLambda="false">
+                    <lastModified/>
+                    <hiddenProperties/>
+                    <guardRuleGUID>
+                        <rule icon="" name="Classify_Transition_1" description="" guid="1174321226581-1721583634" bindings="" namespace="" isAFunction="false" isAConditionFunction="false" compilationStatus="0">
+                            <lastModified/>
+                            <hiddenProperties/>
+                            <priority>5</priority>
+                            <testInterval>-1</testInterval>
+                            <startTime>-1</startTime>
+                            <doesRequeue>false</doesRequeue>
+                            <maxRules>1</maxRules>
+                            <fwdChain>true</fwdChain>
+                            <bwdChain>false</bwdChain>
+                            <declarations>
+                                <declarations identifier="creditreqconcept" entity="/pawn/Concepts/creditReqConcept"/>
+                            </declarations>
+                            <condition>1 == 2;</condition>
+                            <action/>
+                            <requeueVars/>
+                            <template/>
+                            <author/>
+                        </rule>
+                    </guardRuleGUID>
+                </StateTransition>
+                <StateTransition icon="" name="Transition" description="" guid="1173797835055-211625120" bindings="" namespace="" x="0" y="0" width="0" height="0" timeoutUnits="1" lineColor="0" linePatternWidth="1.0" linePatternCap="2" linePatternJoin="0" label="pawn" toState="1173797745216-2088791849" fromState="1173797629249-375773980" isLambda="false">
+                    <lastModified/>
+                    <hiddenProperties/>
+                    <guardRuleGUID>
+                        <rule icon="" name="Classify_Transition" description="" guid="1174321226581-51247386" bindings="" namespace="" isAFunction="false" isAConditionFunction="false" compilationStatus="0">
+                            <lastModified/>
+                            <hiddenProperties/>
+                            <priority>5</priority>
+                            <testInterval>-1</testInterval>
+                            <startTime>-1</startTime>
+                            <doesRequeue>false</doesRequeue>
+                            <maxRules>1</maxRules>
+                            <fwdChain>true</fwdChain>
+                            <bwdChain>false</bwdChain>
+                            <declarations>
+                                <declarations identifier="creditreqconcept" entity="/pawn/Concepts/creditReqConcept"/>
+                            </declarations>
+                            <condition>creditreqconcept.pawn == true;</condition>
+                            <action/>
+                            <requeueVars/>
+                            <template/>
+                            <author/>
+                        </rule>
+                    </guardRuleGUID>
+                </StateTransition>
+            </stateTransitions>
+        </StateMachine>
+    </stateMachines>
+</concept>

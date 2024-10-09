@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/mail" xmlns:pfx="http://www.tibco.com/schemas/pantherbw/PantherBW/ProcessDefinitions/Schema/Schema.xsd" xmlns:ns2="http://xmlns.tibco.com/body" xmlns:ns1="http://www.tibco.com/pe/DeployedVarsType" xmlns:ns3="http://www.tibco.com/pe/EngineTypes">
+    <xsd:import namespace="http://www.tibco.com/schemas/pantherbw/PantherBW/ProcessDefinitions/Schema/Schema.xsd" schemaLocation="/PantherBW/ProcessDefinitions/Schema/PantherBW.xsd"/>
+    <pd:name>PantherBW/ProcessDefinitions/BusinessLogic/SendEmail.process</pd:name>
+    <pd:description>The process which sends emails...</pd:description>
+    <pd:startName>Start</pd:startName>
+    <pd:startDescription>The beginning of the SendEmail process.
+</pd:startDescription>
+    <pd:startType ref="pfx:SendEmailRequest"/>
+    <pd:startX>99</pd:startX>
+    <pd:startY>65</pd:startY>
+    <pd:returnBindings>
+        <xsl:choose>
+            <xsl:when test="$_error">
+                <pfx:SendEmailResponse>
+                    <pfx:ResultCode>
+                        <xsl:value-of select="-1"/>
+                    </pfx:ResultCode>
+                    <xsl:if test="$_error/ns3:ErrorReport/StackTrace">
+                        <pfx:ResultMessage>
+                            <xsl:value-of select="$_error/ns3:ErrorReport/StackTrace"/>
+                        </pfx:ResultMessage>
+                    </xsl:if>
+                </pfx:SendEmailResponse>
+            </xsl:when>
+            <xsl:otherwise>
+                <pfx:SendEmailResponse>
+                    <pfx:ResultCode>
+                        <xsl:value-of select="0"/>
+                    </pfx:ResultCode>
+                </pfx:SendEmailResponse>
+            </xsl:otherwise>
+        </xsl:choose>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endDescription>The end of the sendmail process.
+</pd:endDescription>
+    <pd:endType ref="pfx:SendEmailResponse"/>
+    <pd:endX>487</pd:endX>
+    <pd:endY>65</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:activity name="Send Mail">
+        <pd:type>com.tibco.plugin.mail.MailPubActivity</pd:type>
+        <pd:resourceType>ae.activities.MailActivityResource</pd:resourceType>
+        <pd:description>sending of the email.....</pd:description>
+        <pd:x>252</pd:x>
+        <pd:y>65</pd:y>
+        <config>
+            <newMimeSupport>true</newMimeSupport>
+            <inputOutputVersion>5.2.0</inputOutputVersion>
+            <authenticate>false</authenticate>
+            <nonRFC822>false</nonRFC822>
+            <host>%%PantherBW/Shared/Email/SMTP%%</host>
+            <InputHeaders>
+                <xsd:element name="root">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="Content-Type" type="xsd:string" minOccurs="0"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </InputHeaders>
+        </config>
+        <pd:inputBindings>
+            <ns:mailActivityInput>
+                <from>
+                    <xsl:value-of select="$_globalVariables/ns1:GlobalVariables/PantherBW/Shared/Email/from"/>
+                </from>
+                <to>
+                    <xsl:value-of select="$_globalVariables/ns1:GlobalVariables/PantherBW/Shared/Email/to"/>
+                </to>
+                <subject>
+                    <xsl:value-of select="&quot;test&quot;"/>
+                </subject>
+                <ns2:bodyElement>
+                    <bodyText>
+                        <xsl:value-of select="$Start/pfx:SendEmailRequest/pfx:message"/>
+                    </bodyText>
+                </ns2:bodyElement>
+            </ns:mailActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Null">
+        <pd:type>com.tibco.plugin.timer.NullActivity</pd:type>
+        <pd:resourceType>ae.activities.null</pd:resourceType>
+        <pd:description>SendEmail error branch</pd:description>
+        <pd:x>367</pd:x>
+        <pd:y>165</pd:y>
+        <config/>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Send Mail</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Send Mail</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Send Mail</pd:from>
+        <pd:to>Null</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-65536</pd:lineColor>
+        <pd:conditionType>error</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Null</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

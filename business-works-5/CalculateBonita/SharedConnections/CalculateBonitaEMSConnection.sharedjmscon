@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BWSharedResource>
+    <name>CalculateBonitaEMSConnection</name>
+    <resourceType>ae.shared.JMSConnectionKey</resourceType>
+    <description>EMS connection for input parameters and output result of CalculateBonita library</description>
+    <config>
+        <NamingEnvironment>
+            <UseJNDI>true</UseJNDI>
+            <ProviderURL>tcp://localhost:7222</ProviderURL>
+            <NamingURL>%%CalculateBonitaJNDIContextURL%%</NamingURL>
+            <NamingInitialContextFactory>%%CalculateBonitaJNDIContextFactory%%</NamingInitialContextFactory>
+            <TopicFactoryName>TopicConnectionFactory</TopicFactoryName>
+            <QueueFactoryName>QueueConnectionFactory</QueueFactoryName>
+            <NamingPrincipal/>
+            <NamingCredential/>
+        </NamingEnvironment>
+        <ConnectionAttributes>
+            <username/>
+            <password/>
+            <clientID/>
+        </ConnectionAttributes>
+        <UseXACF>false</UseXACF>
+    </config>
+</BWSharedResource>

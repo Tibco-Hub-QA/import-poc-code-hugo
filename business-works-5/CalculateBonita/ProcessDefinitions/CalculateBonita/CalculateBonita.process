@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <pd:name>ProcessDefinitions/CalculateBonita/CalculateBonita.process</pd:name>
+    <pd:description>Calculate pretender's bonita</pd:description>
+    <pd:startName>Start</pd:startName>
+    <pd:startDescription>Start of process with InputParameters structure</pd:startDescription>
+    <pd:startType>
+        <xsd:element name="InputParameters">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="MonthIncrement" type="xsd:long"/>
+                    <xsd:element name="Value" type="xsd:long"/>
+                    <xsd:element name="RealtyValue" type="xsd:long"/>
+                    <xsd:element name="Problem" type="xsd:boolean"/>
+                    <xsd:element name="Loan" type="xsd:long"/>
+                    <xsd:element name="Refund" type="xsd:long"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:startType>
+    <pd:startX>36</pd:startX>
+    <pd:startY>34</pd:startY>
+    <pd:returnBindings>
+        <Bonita>
+            <xsl:value-of select="$Schema0/Bonita +&#xA;(if(( $Start/InputParameters/Problem = 1) and ($Schema0/Bonita > 0))then  -1 else 0)&#xA;+&#xA;(if($Start/InputParameters/Value >= 1000000)then floor($Start/InputParameters/Value div 1000000) else 0)"/>
+        </Bonita>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endDescription>Correction of bonita and output.</pd:endDescription>
+    <pd:endType>
+        <xsd:element name="Bonita" type="xsd:long"/>
+    </pd:endType>
+    <pd:endX>350</pd:endX>
+    <pd:endY>36</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables>
+        <Schema0>
+            <xsd:element name="Bonita" type="xsd:long"/>
+        </Schema0>
+    </pd:processVariables>
+    <pd:activity name="Assign Bonita">
+        <pd:type>com.tibco.pe.core.AssignActivity</pd:type>
+        <pd:resourceType>ae.activities.assignActivity</pd:resourceType>
+        <pd:description>Bonita calculation</pd:description>
+        <pd:x>134</pd:x>
+        <pd:y>36</pd:y>
+        <config>
+            <variableName>Schema0</variableName>
+        </config>
+        <pd:inputBindings>
+            <Bonita>
+                <xsl:value-of select="if($Start/InputParameters/MonthIncrement &lt; 10000) then 0 else&#xA;if((($Start/InputParameters/RealtyValue * 0.7)&lt; (-$Start/InputParameters/Value))and&#xA;  (((-$Start/InputParameters/Value) + $Start/InputParameters/Loan)> 300000))then 0 else &#xA;if($Start/InputParameters/MonthIncrement - $Start/InputParameters/Refund &lt; 7000) then 0 else&#xA;if($Start/InputParameters/MonthIncrement - $Start/InputParameters/Refund &lt; 15000) then 1 else&#xA;if($Start/InputParameters/MonthIncrement - $Start/InputParameters/Refund &lt; 30000) then 2 else&#xA;if($Start/InputParameters/MonthIncrement - $Start/InputParameters/Refund &lt; 100000) then 3 else 4"/>
+            </Bonita>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="UpdateDB">
+        <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+        <pd:x>237</pd:x>
+        <pd:y>37</pd:y>
+        <config>
+            <timeout>10</timeout>
+            <commit>false</commit>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <jdbcSharedConfig>/SharedConnections/SharedTibco.sharedjdbc</jdbcSharedConfig>
+            <statement>UPDATE STATES
+SET PROCESSED = 'Y'
+WHERE ID = ?</statement>
+            <Prepared_Param_DataType>
+                <parameter>
+                    <parameterName>id</parameterName>
+                    <dataType>NUMERIC</dataType>
+                </parameter>
+            </Prepared_Param_DataType>
+        </config>
+        <pd:inputBindings>
+            <jdbcUpdateActivityInput/>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Assign Bonita</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Assign Bonita</pd:from>
+        <pd:to>UpdateDB</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>UpdateDB</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

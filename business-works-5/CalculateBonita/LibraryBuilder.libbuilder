@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Repository:repository xmlns:Repository="http://www.tibco.com/xmlns/repo/types/2002">
+    <name name="LibraryBuilder">
+        <version>30</version>
+        <author>PIKE Electronic</author>
+        <fileLocation>X:\MakeDoc\demo\trialBE\trialProjects\Shared\CalculateBonita.projlib</fileLocation>
+        <resources>/AESchemas/EMS/CalculateBonitaAESchema.aeschema,/ProcessDefinitions/CalculateBonita/CalculateBonitaService.process,/ProcessDefinitions/GetObligator/GetObligatorService.process,/ProcessDefinitions/XMLCreator/CreateObligatorsRegistr.process,/SharedConnections/CalculateBonitaEMSConnection.sharedjmscon</resources>
+        <description>Library builder for CalculateBonita design time library</description>
+    </name>
+</Repository:repository>

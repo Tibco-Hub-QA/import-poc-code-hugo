@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx="http://www.tibco.com/schemas/pantherbw/PantherBW/ProcessDefinitions/Schema/Schema.xsd" xmlns:ns="http://www.tibco.com/pe/EngineTypes">
+    <xsd:import namespace="http://www.tibco.com/schemas/pantherbw/PantherBW/ProcessDefinitions/Schema/Schema.xsd" schemaLocation="/PantherBW/ProcessDefinitions/Schema/PantherBW.xsd"/>
+    <pd:name>PantherBW/ProcessDefinitions/BusinessLogic/GetDate.process</pd:name>
+    <pd:description>The process gets current date from the system....</pd:description>
+    <pd:startName>Start</pd:startName>
+    <pd:startDescription>The beginning of the process.</pd:startDescription>
+    <pd:startType ref="pfx:GetInformationRequest"/>
+    <pd:startX>109</pd:startX>
+    <pd:startY>75</pd:startY>
+    <pd:returnBindings>
+        <xsl:choose>
+            <xsl:when test="$_error">
+                <pfx:GetInformationResponse>
+                    <pfx:ResultCode>
+                        <xsl:value-of select="-1"/>
+                    </pfx:ResultCode>
+                    <xsl:if test="$_error/ns:ErrorReport/StackTrace">
+                        <pfx:ResultMessage>
+                            <xsl:value-of select="$_error/ns:ErrorReport/StackTrace"/>
+                        </pfx:ResultMessage>
+                    </xsl:if>
+                </pfx:GetInformationResponse>
+            </xsl:when>
+            <xsl:otherwise>
+                <pfx:GetInformationResponse>
+                    <pfx:ResultCode>
+                        <xsl:value-of select="0"/>
+                    </pfx:ResultCode>
+                    <xsl:if test="$SetDate/root/DateTime">
+                        <pfx:DateTime>
+                            <xsl:value-of select="$SetDate/root/DateTime"/>
+                        </pfx:DateTime>
+                    </xsl:if>
+                </pfx:GetInformationResponse>
+            </xsl:otherwise>
+        </xsl:choose>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endDescription>The end of the process.</pd:endDescription>
+    <pd:endType ref="pfx:GetInformationResponse"/>
+    <pd:endX>457</pd:endX>
+    <pd:endY>75</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:activity name="SetDate">
+        <pd:type>com.tibco.plugin.mapper.MapperActivity</pd:type>
+        <pd:resourceType>ae.activities.MapperActivity</pd:resourceType>
+        <pd:description>The component where we get the current date.</pd:description>
+        <pd:x>271</pd:x>
+        <pd:y>75</pd:y>
+        <config>
+            <element>
+                <xsd:element name="root">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="DateTime" type="xsd:date"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </element>
+        </config>
+        <pd:inputBindings>
+            <root>
+                <DateTime>
+                    <xsl:value-of select="current-date()"/>
+                </DateTime>
+            </root>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Null">
+        <pd:type>com.tibco.plugin.timer.NullActivity</pd:type>
+        <pd:resourceType>ae.activities.null</pd:resourceType>
+        <pd:description>The error branch.</pd:description>
+        <pd:x>367</pd:x>
+        <pd:y>145</pd:y>
+        <config/>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>SetDate</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>SetDate</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>SetDate</pd:from>
+        <pd:to>Null</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-65536</pd:lineColor>
+        <pd:conditionType>error</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Null</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

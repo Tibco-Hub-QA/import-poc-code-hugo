@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BWSharedResource>
+    <name>CreditReqProps</name>
+    <resourceType>ae.shared.JMSAppPropResource</resourceType>
+    <config>
+        <Properties>
+            <row>
+                <PropertyName>customerName</PropertyName>
+                <Type>string</Type>
+                <Cardinality>required</Cardinality>
+            </row>
+            <row>
+                <PropertyName>realtyDetails</PropertyName>
+                <Type>string</Type>
+                <Cardinality>required</Cardinality>
+            </row>
+            <row>
+                <PropertyName>pawn</PropertyName>
+                <Type>boolean</Type>
+                <Cardinality>required</Cardinality>
+            </row>
+        </Properties>
+    </config>
+</BWSharedResource>

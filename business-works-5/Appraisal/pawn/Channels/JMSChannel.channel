@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<channel folder="/pawn/Channels/" name="JMSChannel" guid="1172222885167-1027866990" description="">
+    <type>JMS</type>
+    <version>1.0.0.1</version>
+    <configMethod>reference</configMethod>
+    <reference>/SharedJMSResources/JMSConn.sharedjmscon</reference>
+    <destinations>
+        <destination name="apprReqQueue" serializer="">
+            <isInput>false</isInput>
+            <isOutput>true</isOutput>
+            <event namespace="/pawn/Events/">/pawn/Events/appraisalRequest</event>
+            <properties>
+                <instance icon="" name="Destination" description="" guid="1171566239223-1697519336" bindings="" namespace="" folder="/Destinations/JMS/" concept="/Destinations/JMS/JMS">
+                    <lastModified/>
+                    <hiddenProperties/>
+                    <domains/>
+                    <properties>
+                        <propertyInstance instance="/Destinations/JMS/Destination" definition="Queue" value="true" hasBeenSet="false"/>
+                        <propertyInstance instance="/Destinations/JMS/Destination" definition="Name" value="%%ENV%%.%%QueueApprReq%%" hasBeenSet="true"/>
+                        <propertyInstance instance="/Destinations/JMS/Destination" definition="Selector" value="" hasBeenSet="false"/>
+                        <propertyInstance instance="/Destinations/JMS/Destination" definition="DurableSuscriberName" value="%%Deployment%%:%%be.engine.name%%:%%ChannelURI%%:%%DestinationURI%%" hasBeenSet="false"/>
+                    </properties>
+                    <views/>
+                </instance>
+            </properties>
+        </destination>
+        <destination name="apprReqTopic" serializer="">
+            <isInput>false</isInput>
+            <isOutput>true</isOutput>
+            <event namespace="/pawn/Events/">/pawn/Events/appraisalRequest</event>
+            <properties>
+                <instance icon="" name="Destination_2" description="" guid="1171888610655-595686094" bindings="" namespace="" folder="/Destinations/JMS/" concept="/Destinations/JMS/JMS">
+                    <lastModified/>
+                    <hiddenProperties/>
+                    <domains/>
+                    <properties>
+                        <propertyInstance instance="/Destinations/JMS/Destination_2" definition="Queue" value="false" hasBeenSet="true"/>
+                        <propertyInstance instance="/Destinations/JMS/Destination_2" definition="Name" value="%%ENV%%.%%QueueApprReq%%" hasBeenSet="true"/>
+                        <propertyInstance instance="/Destinations/JMS/Destination_2" definition="Selector" value="" hasBeenSet="false"/>
+                        <propertyInstance instance="/Destinations/JMS/Destination_2" definition="DurableSuscriberName" value="" hasBeenSet="true"/>
+                    </properties>
+                    <views/>
+                </instance>
+            </properties>
+        </destination>
+    </destinations>
+</channel>

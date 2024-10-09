@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns="http://www.tibco.com/pe/DeployedVarsType" xmlns:pfx="http://www.tibco.com/schemas/GrantingCredit/SharedConnections/Schema1.xsd" xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/file">
+    <xsd:import namespace="http://www.tibco.com/schemas/GrantingCredit/SharedConnections/Schema1.xsd" schemaLocation="/SharedResources/ObligatorsRegistrXSD.xsd"/>
+    <pd:name>ProcessDefinitions/XMLCreator/CreateObligatorsRegistr.process</pd:name>
+    <pd:description>Create default basic ObligatorRegistr xml file</pd:description>
+    <pd:startName>Start</pd:startName>
+    <pd:startDescription>Start of process</pd:startDescription>
+    <pd:startType/>
+    <pd:startX>36</pd:startX>
+    <pd:startY>44</pd:startY>
+    <pd:returnBindings/>
+    <pd:endName>End</pd:endName>
+    <pd:endDescription>End of process</pd:endDescription>
+    <pd:endType/>
+    <pd:endX>356</pd:endX>
+    <pd:endY>44</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:activity name="WriteFile ObligatorRegistr">
+        <pd:type>com.tibco.plugin.file.FileWriteActivity</pd:type>
+        <pd:resourceType>ae.activities.FileWriteActivity</pd:resourceType>
+        <pd:description>Save rendered xml string as file</pd:description>
+        <pd:x>251</pd:x>
+        <pd:y>52</pd:y>
+        <config>
+            <encoding>text</encoding>
+            <compressFile>None</compressFile>
+        </config>
+        <pd:inputBindings>
+            <ns2:WriteActivityInputTextClass>
+                <fileName>
+                    <xsl:value-of select="$_globalVariables/ns:GlobalVariables/DefaultObligatorsRegistrFile"/>
+                </fileName>
+                <textContent>
+                    <xsl:value-of select="$RenderXML-ObligatorsList/xmlString"/>
+                </textContent>
+            </ns2:WriteActivityInputTextClass>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="RenderXML ObligatorsList">
+        <pd:type>com.tibco.plugin.xml.XMLRendererActivity</pd:type>
+        <pd:resourceType>ae.activities.XMLRendererActivity</pd:resourceType>
+        <pd:description>Render string in XML format according to ObligatorsRegistr XSD schema</pd:description>
+        <pd:x>131</pd:x>
+        <pd:y>52</pd:y>
+        <config>
+            <renderAsText>text</renderAsText>
+            <validateInput>true</validateInput>
+            <renderDefaultPrefix>true</renderDefaultPrefix>
+            <textEncoding>UTF-8</textEncoding>
+            <term ref="pfx:ObligatorsList"/>
+        </config>
+        <pd:inputBindings>
+            <pfx:ObligatorsList>
+                <xsl:attribute name="Count">
+                    <xsl:value-of select="1"/>
+                </xsl:attribute>
+                <pfx:Obligator>
+                    <pfx:Name>
+                        <xsl:value-of select="&quot;Jan Novak&quot;"/>
+                    </pfx:Name>
+                    <pfx:Value>
+                        <xsl:value-of select="100000"/>
+                    </pfx:Value>
+                    <pfx:Problem>
+                        <xsl:value-of select="0"/>
+                    </pfx:Problem>
+                    <pfx:Refund>
+                        <xsl:value-of select="5000"/>
+                    </pfx:Refund>
+                </pfx:Obligator>
+            </pfx:ObligatorsList>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>RenderXML ObligatorsList</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>RenderXML ObligatorsList</pd:from>
+        <pd:to>WriteFile ObligatorRegistr</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>WriteFile ObligatorRegistr</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

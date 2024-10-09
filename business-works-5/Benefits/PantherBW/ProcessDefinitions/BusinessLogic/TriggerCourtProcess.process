@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="www.tibco.com/plugin/staffware/iProcessStartCaseActivityInput" xmlns:pfx="http://www.tibco.com/schemas/pantherbw/PantherBW/ProcessDefinitions/Schema/Schema.xsd" xmlns:pfx2="http://www.tibco.com/pe/GenerateErrorActivity/InputSchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://www.tibco.com/pe/EngineTypes">
+    <xsd:import namespace="http://www.tibco.com/schemas/pantherbw/PantherBW/ProcessDefinitions/Schema/Schema.xsd" schemaLocation="/PantherBW/ProcessDefinitions/Schema/PantherBW.xsd"/>
+    <pd:name>PantherBW/ProcessDefinitions/BusinessLogic/TriggerCourtProcess.process</pd:name>
+    <pd:description>The process which triggers procedures in the iProcess</pd:description>
+    <pd:startName>Start</pd:startName>
+    <pd:startDescription>The beginning of TriggerCourt process</pd:startDescription>
+    <pd:startType ref="pfx:TriggerCourtProcessRequest"/>
+    <pd:startX>109</pd:startX>
+    <pd:startY>75</pd:startY>
+    <pd:returnBindings>
+        <xsl:choose>
+            <xsl:when test="$Variable0/Results/ResultCode=0">
+                <pfx:TriggerCourtProcessResponse>
+                    <pfx:ResultCode>
+                        <xsl:value-of select="0"/>
+                    </pfx:ResultCode>
+                </pfx:TriggerCourtProcessResponse>
+            </xsl:when>
+            <xsl:otherwise>
+                <pfx:TriggerCourtProcessResponse>
+                    <pfx:ResultCode>
+                        <xsl:value-of select="-1"/>
+                    </pfx:ResultCode>
+                    <pfx:ResultMessage>
+                        <xsl:value-of select="&quot;Error.&quot;"/>
+                    </pfx:ResultMessage>
+                </pfx:TriggerCourtProcessResponse>
+            </xsl:otherwise>
+        </xsl:choose>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endDescription>The ending of the TriggerCourt process</pd:endDescription>
+    <pd:endType ref="pfx:TriggerCourtProcessResponse"/>
+    <pd:endX>597</pd:endX>
+    <pd:endY>75</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables>
+        <Variable0>
+            <xsd:element name="Results">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="ResultCode" type="xsd:int"/>
+                        <xsd:element name="ResultMsg" type="xsd:string" minOccurs="0"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </Variable0>
+    </pd:processVariables>
+    <pd:activity name="Panther2 - begin the process">
+        <pd:type>com.tibco.plugin.staffware.iProcessStartCaseActivity</pd:type>
+        <pd:resourceType>ae.activities.iProcessStartCase</pd:resourceType>
+        <pd:description>Panther2 - begin the process</pd:description>
+        <pd:x>336</pd:x>
+        <pd:y>123</pd:y>
+        <config>
+            <StaffwareStepType>2</StaffwareStepType>
+            <StaffwareProcedureStatus>1</StaffwareProcedureStatus>
+            <UseCasePrecedenceRule>true</UseCasePrecedenceRule>
+            <StaffwareProcedureStartMode>1</StaffwareProcedureStartMode>
+            <ShowStaffwareProcedureSystemFields>false</ShowStaffwareProcedureSystemFields>
+            <ValidateInputValueLength>true</ValidateInputValueLength>
+            <OverrideTransactionBehavior>false</OverrideTransactionBehavior>
+            <StaticConfiguration>false</StaticConfiguration>
+            <StaffwareProcedureName>PANTHER2 (0.1)</StaffwareProcedureName>
+            <StaffwareProcedureInput/>
+            <StaffwareNodeInfo>0^/^:^[3.1.1]^</StaffwareNodeInfo>
+            <StaffwareStepName>RT00</StaffwareStepName>
+            <StaffwareStepInput/>
+            <StaffwareConnection>/SharedResources/Connection/iProcess Connection.sharediprocesscon</StaffwareConnection>
+        </config>
+        <pd:inputBindings>
+            <ns:iProcessStartCaseActivityInput>
+                <CaseDescription-24>
+                    <xsl:value-of select="$Start/pfx:TriggerCourtProcessRequest/pfx:SW_CASENUM"/>
+                </CaseDescription-24>
+            </ns:iProcessStartCaseActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Panther1 - send email">
+        <pd:type>com.tibco.plugin.staffware.iProcessStartCaseActivity</pd:type>
+        <pd:resourceType>ae.activities.iProcessStartCase</pd:resourceType>
+        <pd:description>Panther1 - send email</pd:description>
+        <pd:x>333</pd:x>
+        <pd:y>205</pd:y>
+        <config>
+            <StaffwareStepType>0</StaffwareStepType>
+            <StaffwareProcedureStatus>1</StaffwareProcedureStatus>
+            <UseCasePrecedenceRule>true</UseCasePrecedenceRule>
+            <StaffwareProcedureStartMode>1</StaffwareProcedureStartMode>
+            <ShowStaffwareProcedureSystemFields>false</ShowStaffwareProcedureSystemFields>
+            <ValidateInputValueLength>true</ValidateInputValueLength>
+            <OverrideTransactionBehavior>false</OverrideTransactionBehavior>
+            <StaticConfiguration>false</StaticConfiguration>
+            <StaffwareProcedureName>PANTHER1 (0.6)</StaffwareProcedureName>
+            <StaffwareProcedureInput>N_EMAILS^82^?^10^0,T_DATE^65^?^20^0,T_ERRORMSG^70^?^0^0,T_EXPDATE^65^?^20^0,T_FIRSTMAIL^65^?^20^0,T_WAIT^65^?^20^0,</StaffwareProcedureInput>
+            <StaffwareNodeInfo>0^/^:^[3.1.1]^</StaffwareNodeInfo>
+            <StaffwareStepName>RT03</StaffwareStepName>
+            <StaffwareStepInput/>
+            <StaffwareConnection>/SharedResources/Connection/iProcess Connection.sharediprocesscon</StaffwareConnection>
+        </config>
+        <pd:inputBindings>
+            <ns:iProcessStartCaseActivityInput>
+                <CaseDescription-24>
+                    <xsl:value-of select="$Start/pfx:TriggerCourtProcessRequest/pfx:SW_CASENUM"/>
+                </CaseDescription-24>
+            </ns:iProcessStartCaseActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Generate Error">
+        <pd:type>com.tibco.pe.core.GenerateErrorActivity</pd:type>
+        <pd:resourceType>ae.activities.throw</pd:resourceType>
+        <pd:description>Generates error when someone is trying to run other procedure then pre-defined</pd:description>
+        <pd:x>107</pd:x>
+        <pd:y>195</pd:y>
+        <config>
+            <faultName/>
+        </config>
+        <pd:inputBindings>
+            <pfx2:ActivityInput>
+                <message>
+                    <xsl:value-of select="&quot;Judge made wrong decision.&quot;"/>
+                </message>
+            </pfx2:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Catch">
+        <pd:type>com.tibco.pe.core.CatchActivity</pd:type>
+        <pd:resourceType>ae.activities.catch</pd:resourceType>
+        <pd:description>The error catcher...</pd:description>
+        <pd:x>591</pd:x>
+        <pd:y>275</pd:y>
+        <pd:handler>true</pd:handler>
+        <config>
+            <catchAll>true</catchAll>
+        </config>
+        <pd:inputBindings/>
+    </pd:activity>
+    <pd:activity name="Assign">
+        <pd:type>com.tibco.pe.core.AssignActivity</pd:type>
+        <pd:resourceType>ae.activities.assignActivity</pd:resourceType>
+        <pd:description>It assigns the error value and error message.</pd:description>
+        <pd:x>594</pd:x>
+        <pd:y>185</pd:y>
+        <config>
+            <variableName>Variable0</variableName>
+        </config>
+        <pd:inputBindings>
+            <Results>
+                <ResultCode>
+                    <xsl:value-of select="-1"/>
+                </ResultCode>
+                <ResultMsg>
+                    <xsl:value-of select="&quot;Error&quot;"/>
+                </ResultMsg>
+            </Results>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Panther1 - restart process">
+        <pd:type>com.tibco.plugin.staffware.iProcessStartCaseActivity</pd:type>
+        <pd:resourceType>ae.activities.iProcessStartCase</pd:resourceType>
+        <pd:description>Panther1 - restart process</pd:description>
+        <pd:x>334</pd:x>
+        <pd:y>305</pd:y>
+        <config>
+            <StaffwareStepType>2</StaffwareStepType>
+            <StaffwareProcedureStatus>1</StaffwareProcedureStatus>
+            <UseCasePrecedenceRule>true</UseCasePrecedenceRule>
+            <StaffwareProcedureStartMode>1</StaffwareProcedureStartMode>
+            <ShowStaffwareProcedureSystemFields>false</ShowStaffwareProcedureSystemFields>
+            <ValidateInputValueLength>true</ValidateInputValueLength>
+            <OverrideTransactionBehavior>false</OverrideTransactionBehavior>
+            <StaticConfiguration>false</StaticConfiguration>
+            <StaffwareProcedureName>PANTHER1 (0.6)</StaffwareProcedureName>
+            <StaffwareProcedureInput>N_EMAILS^82^?^10^0,T_DATE^65^?^20^0,T_ERRORMSG^70^?^0^0,T_EXPDATE^65^?^20^0,T_FIRSTMAIL^65^?^20^0,T_WAIT^65^?^20^0,</StaffwareProcedureInput>
+            <StaffwareNodeInfo>0^/^:^[3.1.1]^</StaffwareNodeInfo>
+            <StaffwareStepName>RT00</StaffwareStepName>
+            <StaffwareStepInput/>
+            <StaffwareConnection>/SharedResources/Connection/iProcess Connection.sharediprocesscon</StaffwareConnection>
+        </config>
+        <pd:inputBindings>
+            <ns:iProcessStartCaseActivityInput>
+                <CaseDescription-24>
+                    <xsl:value-of select="$Start/pfx:TriggerCourtProcessRequest/pfx:SW_CASENUM"/>
+                </CaseDescription-24>
+            </ns:iProcessStartCaseActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:description>starts the court</pd:description>
+        <pd:from>Start</pd:from>
+        <pd:to>Panther2 - begin the process</pd:to>
+        <pd:xpathDescription>court</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$Start/pfx:TriggerCourtProcessRequest/pfx:message="COURT"</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Panther2 - begin the process</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:description>starts the procedure which sends email</pd:description>
+        <pd:from>Start</pd:from>
+        <pd:to>Panther1 - send email</pd:to>
+        <pd:xpathDescription>mail</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$Start/pfx:TriggerCourtProcessRequest/pfx:message="MAIL"</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Panther1 - send email</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Generate Error</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>otherwise</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Catch</pd:from>
+        <pd:to>Assign</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-65536</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Assign</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:description>ends the process</pd:description>
+        <pd:from>Start</pd:from>
+        <pd:to>End</pd:to>
+        <pd:xpathDescription>end process</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$Start/pfx:TriggerCourtProcessRequest/pfx:message="QUIT"</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Panther1 - restart process</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:description>restarts the whole process</pd:description>
+        <pd:from>Start</pd:from>
+        <pd:to>Panther1 - restart process</pd:to>
+        <pd:xpathDescription>restart</pd:xpathDescription>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$Start/pfx:TriggerCourtProcessRequest/pfx:message="RESTART"</pd:xpath>
+    </pd:transition>
+</pd:ProcessDefinition>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ns0:httpSharedResource xmlns:ns0="www.tibco.com/shared/HTTPConnection">
+    <config>
+        <Host>localhost</Host>
+        <Port>%%CalculateBonitaHTTPSOAPPort%%</Port>
+        <description>Connection for HTTP SOAP communication with GetObligator process</description>
+    </config>
+</ns0:httpSharedResource>

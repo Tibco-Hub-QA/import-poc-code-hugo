@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pfx="http://xmlns.example.com/1171610171437/GetAccountStateOperationImpl" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx2="http://www.tibco.com/xmlns/ae2xsd/2002/05/EMS/CalculateBonitaAESchema" xmlns:ns="http://www.tibco.com/schemas/AccountState/SharedResources/Schema.xsd" xmlns:ns1="http://www.tibco.com/pe/DeployedVarsType" xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/jms" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pfx3="http://xmlns.example.com/1171360277608/GetObligatorServiceOperationImpl">
+    <xsd:import namespace="http://www.tibco.com/xmlns/ae2xsd/2002/05/EMS/CalculateBonitaAESchema" schemaLocation="/AESchemas/EMS/CalculateBonitaAESchema.aeschema"/>
+    <wsdl:import namespace="http://xmlns.example.com/1171610171437/GetAccountStateOperationImpl" location="/SharedResources/GetAccountStateConcreteWSDL.wsdl"/>
+    <pd:name>ProcessDefinitions/AccountState.process</pd:name>
+    <pd:description>Main communication process. Receive input parameters. Call CalculateBonita process and at the end send result.</pd:description>
+    <pd:startName>Autentification HTTPReceiver</pd:startName>
+    <pd:startX>0</pd:startX>
+    <pd:startY>0</pd:startY>
+    <pd:returnBindings/>
+    <pd:starter name="Autentification HTTPReceiver">
+        <pd:type>com.tibco.plugin.http.HTTPEventSource</pd:type>
+        <pd:resourceType>httppalette.httpEventSource</pd:resourceType>
+        <pd:description>Receive input client autentification information from HTTP</pd:description>
+        <pd:x>66</pd:x>
+        <pd:y>62</pd:y>
+        <config>
+            <outputMode>String</outputMode>
+            <defaultEncoding>ISO8859_1</defaultEncoding>
+            <inputOutputVersion>5.3.0</inputOutputVersion>
+            <newMimeSupport>true</newMimeSupport>
+            <sharedChannel>/SharedConnections/IOHTTPConnection.sharedhttp</sharedChannel>
+            <customField>
+                <row>
+                    <attribute>Name</attribute>
+                    <attributeType>string</attributeType>
+                    <attributeCard>required</attributeCard>
+                </row>
+                <row>
+                    <attribute>Password</attribute>
+                    <attributeType>string</attributeType>
+                    <attributeCard>required</attributeCard>
+                </row>
+            </customField>
+            <Headers>
+                <xsd:element name="root">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="Accept" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Accept-Charset" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Accept-Encoding" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Content-Type" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Content-Length" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Connection" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Cookie" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Pragma" type="xsd:string" minOccurs="0"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </Headers>
+        </config>
+        <pd:inputBindings/>
+    </pd:starter>
+    <pd:endName>End</pd:endName>
+    <pd:endDescription>Process end</pd:endDescription>
+    <pd:endX>726</pd:endX>
+    <pd:endY>54</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:activity name="AccountState SOAPRequestReply">
+        <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
+        <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
+        <pd:description>SOAPRequest on GetAccountState process and get reply with result</pd:description>
+        <pd:x>200</pd:x>
+        <pd:y>62</pd:y>
+        <config>
+            <timeout>0</timeout>
+            <service>pfx:GetAccountStateService</service>
+            <servicePort>UserName_sp_SOAPEventSource</servicePort>
+            <operation>GetAccountStateOperation</operation>
+            <soapAction>/ProcessDefinitions/GetAccountState/GetAccountStateService</soapAction>
+            <endpointURL>%%AccountStateServiceEndpointURL%%</endpointURL>
+        </config>
+        <pd:inputBindings>
+            <inputMessage>
+                <ns:Name>
+                    <xsl:value-of select="$Autentification-HTTPReceiver/ProcessStarterOutput/parameters/Name"/>
+                </ns:Name>
+            </inputMessage>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Bonita JMSQueueRequestor">
+        <pd:type>com.tibco.plugin.jms.JMSQueueRequestReplyActivity</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueRequestReplyActivity</pd:resourceType>
+        <pd:description>JMS request on CalculateBonita process and get reply with result</pd:description>
+        <pd:x>384</pd:x>
+        <pd:y>43</pd:y>
+        <config>
+            <PermittedMessageType>XML Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>1</maxSessions>
+                <destination>%%ENV%%.%%CalculateBonitaJMSQueueName%%</destination>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+            <ConnectionReference>/SharedConnections/CalculateBonitaEMSConnection.sharedjmscon</ConnectionReference>
+            <ApplicationProperties>/SharedResources/JMSApplicationProperties.sharedjmsapp</ApplicationProperties>
+            <InDataxsdString ref="pfx2:InputParameters"/>
+            <OutDataxsdString ref="pfx2:PretenderBonita"/>
+        </config>
+        <pd:inputBindings>
+            <ns2:ActivityInput>
+                <replyToQueue>
+                    <xsl:value-of select="concat($_globalVariables/ns1:GlobalVariables/ENV,$_globalVariables/ns1:GlobalVariables/AccountStateJMSQueueName)"/>
+                </replyToQueue>
+                <OtherProperties>
+                    <Part>
+                        <xsl:value-of select="&quot;CalculateBonita&quot;"/>
+                    </Part>
+                </OtherProperties>
+                <Body>
+                    <pfx2:InputParameters>
+                        <Name>
+                            <xsl:value-of select="$AccountState-SOAPRequestReply/outputMessage/ns:Account/ns:Name"/>
+                        </Name>
+                        <Value>
+                            <xsl:value-of select="$AccountState-SOAPRequestReply/outputMessage/ns:Account/ns:Value"/>
+                        </Value>
+                        <MonthIncrement>
+                            <xsl:value-of select="$AccountState-SOAPRequestReply/outputMessage/ns:Account/ns:MonthIncrement"/>
+                        </MonthIncrement>
+                        <RealtyValue>
+                            <xsl:value-of select="0"/>
+                        </RealtyValue>
+                        <Refund>
+                            <xsl:value-of select="0"/>
+                        </Refund>
+                    </pfx2:InputParameters>
+                </Body>
+            </ns2:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="AccountState SendHTTPResponse">
+        <pd:type>com.tibco.plugin.http.HTTPResponseActivity</pd:type>
+        <pd:resourceType>httppalette.httpWebResponse</pd:resourceType>
+        <pd:description>Send result as HTTP</pd:description>
+        <pd:x>543</pd:x>
+        <pd:y>62</pd:y>
+        <config>
+            <closeConnection>true</closeConnection>
+            <eventSource>Autentification HTTPReceiver</eventSource>
+            <Headers>
+                <xsd:element name="root">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="StatusLine" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Content-Type" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Set-Cookie" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Pragma" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Location" type="xsd:string" minOccurs="0"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </Headers>
+        </config>
+        <pd:inputBindings>
+            <ResponseActivityInput>
+                <asciiContent>
+                    <xsl:value-of select="concat(&quot;&lt;H1>Account state&lt;/H1>&lt;B>Account no: &lt;/B>&quot;,$AccountState-SOAPRequestReply/outputMessage/ns:Account/ns:Number,&#xA;&quot;&lt;BR>&lt;B>Name: &lt;/B>&quot;, $AccountState-SOAPRequestReply/outputMessage/ns:Account/ns:Name,&#xA;&quot;&lt;BR>&lt;B>Value: &lt;/B>&quot;, $AccountState-SOAPRequestReply/outputMessage/ns:Account/ns:Value,&#xA;&quot;&lt;BR>&lt;B>Account status: &lt;/B>&quot;,&#xA;(if($Bonita-JMSQueueRequestor/ns2:ActivityOutput/Body/pfx2:PretenderBonita/Bonita &lt;= 0) then &quot;Basic&quot; else&#xA;if($Bonita-JMSQueueRequestor/ns2:ActivityOutput/Body/pfx2:PretenderBonita/Bonita = 1) then &quot;Normal&quot; else&#xA;if($Bonita-JMSQueueRequestor/ns2:ActivityOutput/Body/pfx2:PretenderBonita/Bonita = 2) then &quot;Bronze&quot; else&#xA;if($Bonita-JMSQueueRequestor/ns2:ActivityOutput/Body/pfx2:PretenderBonita/Bonita = 3) then &quot;Silver&quot; else&#xA;&quot;Gold&quot;))"/>
+                </asciiContent>
+            </ResponseActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="FailedAutentification SendHTTPResponse">
+        <pd:type>com.tibco.plugin.http.HTTPResponseActivity</pd:type>
+        <pd:resourceType>httppalette.httpWebResponse</pd:resourceType>
+        <pd:description>Send message about failed autentification as HTTP</pd:description>
+        <pd:x>553</pd:x>
+        <pd:y>152</pd:y>
+        <config>
+            <closeConnection>true</closeConnection>
+            <eventSource>Autentification HTTPReceiver</eventSource>
+            <Headers>
+                <xsd:element name="root">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="StatusLine" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Content-Type" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Set-Cookie" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Pragma" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Location" type="xsd:string" minOccurs="0"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </Headers>
+        </config>
+        <pd:inputBindings>
+            <ResponseActivityInput>
+                <asciiContent>
+                    <xsl:value-of select="&quot;&lt;H1>Autentification data failed&lt;/H1>&quot;"/>
+                </asciiContent>
+            </ResponseActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Autentification HTTPReceiver</pd:from>
+        <pd:to>AccountState SOAPRequestReply</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>AccountState SOAPRequestReply</pd:from>
+        <pd:to>Bonita JMSQueueRequestor</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>($Autentification-HTTPReceiver/ProcessStarterOutput/parameters/Name = $AccountState-SOAPRequestReply/outputMessage/ns:Account/ns:Name) and
+($Autentification-HTTPReceiver/ProcessStarterOutput/parameters/Password = $AccountState-SOAPRequestReply/outputMessage/ns:Account/ns:Password)</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Bonita JMSQueueRequestor</pd:from>
+        <pd:to>AccountState SendHTTPResponse</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>AccountState SendHTTPResponse</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>FailedAutentification SendHTTPResponse</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>AccountState SOAPRequestReply</pd:from>
+        <pd:to>FailedAutentification SendHTTPResponse</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>($Autentification-HTTPReceiver/ProcessStarterOutput/parameters/Name !=$AccountState-SOAPRequestReply/outputMessage/ns:Account/ns:Name) or
+($Autentification-HTTPReceiver/ProcessStarterOutput/parameters/Password !=$AccountState-SOAPRequestReply/outputMessage/ns:Account/ns:Password)</pd:xpath>
+    </pd:transition>
+</pd:ProcessDefinition>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<BWSharedResource>
+    <name>iProcess Connection</name>
+    <resourceType>ae.shared.iProcessConnection</resourceType>
+    <config>
+        <ServerDiscovery>0</ServerDiscovery>
+        <ServerName>TIBCOIPE</ServerName>
+        <ComputerName/>
+        <IPAddress>%%PantherBW/iProcessConnection/IPAddress%%</IPAddress>
+        <UDPPortNumber>%%PantherBW/iProcessConnection/UDPPort%%</UDPPortNumber>
+        <TCPPortNumber>28001</TCPPortNumber>
+        <IsDirector>0</IsDirector>
+        <UserName>%%PantherBW/iProcessConnection/username%%</UserName>
+        <UserPassword>%%PantherBW/iProcessConnection/password%%</UserPassword>
+        <DatabaseConnectionType>0</DatabaseConnectionType>
+        <DatabaseMaxConnection>%%PantherBW/iProcessDatabaseConnection/MaxConnections%%</DatabaseMaxConnection>
+        <DatabaseLoginTimeout>%%PantherBW/iProcessDatabaseConnection/LoginTimeOut%%</DatabaseLoginTimeout>
+        <DatabaseOperationTimeout>%%PantherBW/iProcessDatabaseConnection/OperationTimeOut%%</DatabaseOperationTimeout>
+        <AutoDataBaseConfig>false</AutoDataBaseConfig>
+        <DatabaseType>1</DatabaseType>
+        <JDBCDriverName>%%PantherBW/iProcessDatabaseConnection/JDBCDriver%%</JDBCDriverName>
+        <XADataSourceName/>
+        <DatabaseURL>%%PantherBW/iProcessDatabaseConnection/URL%%</DatabaseURL>
+        <DatabaseUserName>%%PantherBW/iProcessDatabaseConnection/UserName%%</DatabaseUserName>
+        <DatabasePassword>%%PantherBW/iProcessDatabaseConnection/Password%%</DatabasePassword>
+        <AdminUserName>%%PantherBW/iProcessDatabaseConnection/SchemaOwner%%</AdminUserName>
+    </config>
+</BWSharedResource>

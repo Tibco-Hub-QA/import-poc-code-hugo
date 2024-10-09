@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Repository:repository xmlns:Repository="http://www.tibco.com/xmlns/repo/types/2002">
+    <enterpriseArchive>
+        <sharedArchive name="Shared Archive">
+            <resourceType>shared.archive.resource</resourceType>
+            <authorProperty>PIKE ELECTRONIC</authorProperty>
+        </sharedArchive>
+        <processArchive name="Process Archive">
+            <resourceType>process.archive.resource</resourceType>
+            <authorProperty>PIKE ELECTRONIC</authorProperty>
+            <processProperty>/ProcessDefinitions/BankService/PublishAppraisalRequest.process,/ProcessDefinitions/Appraiser4/ProcessRequest4.process,/ProcessDefinitions/Appraiser3/ProcessRequest3.process,/ProcessDefinitions/Appraiser2/ProcessRequest2.process,/ProcessDefinitions/Appraiser1/ProcessRequest1.process,/pawn/SendApprRequest.process</processProperty>
+        </processArchive>
+        <versionProperty>12</versionProperty>
+        <authorProperty>PIKE ELECTRONIC</authorProperty>
+        <addServiceSettableGvars>true</addServiceSettableGvars>
+        <name>Appraisal</name>
+        <designer>
+            <lockedProperties/>
+            <fixedChildren/>
+            <resourceDescriptions/>
+        </designer>
+        <fileLocationProperty>X:\MakeDoc\demo\trialBE\trialProjects\Appraisal\EAR\Appraisal.ear</fileLocationProperty>
+        <description>appraisal module archive</description>
+    </enterpriseArchive>
+</Repository:repository>
