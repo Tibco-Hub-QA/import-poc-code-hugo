@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<InputParameters xmlns="http://www.tibco.com/schemas/GrantingCredit/SharedConnections/Schema.xsd">
+    <Name>Jan Novak</Name>
+    <Value>750000</Value>
+    <Refund>5000</Refund>
+    <Salary>20000</Salary>
+    <Pawn>true</Pawn>
+    <RealtyDetail>Realty no: 1587649</RealtyDetail>
+    <RealtyValue>1500000</RealtyValue>
+</InputParameters>

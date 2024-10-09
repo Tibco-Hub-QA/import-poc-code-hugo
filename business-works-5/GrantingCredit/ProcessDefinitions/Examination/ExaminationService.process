@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pfx="http://www.tibco.com/xmlns/ae2xsd/2002/05/EMS/GrantingCreditAESchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx2="http://www.tibco.com/xmlns/ae2xsd/2002/05/EMS/CalculateBonitaAESchema" xmlns:ns="http://www.tibco.com/namespaces/tnt/plugins/jms" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ns1="http://www.tibco.com/pe/DeployedVarsType" xmlns:pfx3="http://www.tibco.com/pe/SignalInActivitySchema" xmlns:pfx4="http://www.tibco.com/xmlns/ae2xsd/2002/05/Appraisal/AppraisalAESchema">
+    <xsd:import namespace="http://www.tibco.com/xmlns/ae2xsd/2002/05/EMS/CalculateBonitaAESchema" schemaLocation="/AESchemas/EMS/CalculateBonitaAESchema.aeschema"/>
+    <xsd:import namespace="http://www.tibco.com/xmlns/ae2xsd/2002/05/EMS/GrantingCreditAESchema" schemaLocation="/AESchemas/EMS/GrantingCreditAESchema.aeschema"/>
+    <xsd:import namespace="http://www.tibco.com/xmlns/ae2xsd/2002/05/Appraisal/AppraisalAESchema" schemaLocation="/AESchemas/Appraisal/AppraisalAESchema.aeschema"/>
+    <pd:name>ProcessDefinitions/Examination/ExaminationService.process</pd:name>
+    <pd:startName>InputParameters JMSQueueReceiver</pd:startName>
+    <pd:startX>0</pd:startX>
+    <pd:startY>0</pd:startY>
+    <pd:returnBindings/>
+    <pd:starter name="InputParameters JMSQueueReceiver">
+        <pd:type>com.tibco.plugin.jms.JMSQueueEventSource</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueEventSource</pd:resourceType>
+        <pd:x>61</pd:x>
+        <pd:y>52</pd:y>
+        <config>
+            <PermittedMessageType>XML Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>1</maxSessions>
+                <destination>%%ENV%%.%%JMSQueueName%%</destination>
+                <selector>Part='InputParameters'</selector>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+            <ConnectionReference>/SharedConnections/EMSConnection.sharedjmscon</ConnectionReference>
+            <OutDataxsdString ref="pfx:InputParameters"/>
+        </config>
+        <pd:inputBindings/>
+    </pd:starter>
+    <pd:endName>End</pd:endName>
+    <pd:endX>916</pd:endX>
+    <pd:endY>54</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:activity name="Bonita JMSQueueRequestor">
+        <pd:type>com.tibco.plugin.jms.JMSQueueRequestReplyActivity</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueRequestReplyActivity</pd:resourceType>
+        <pd:x>535</pd:x>
+        <pd:y>63</pd:y>
+        <config>
+            <PermittedMessageType>XML Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>1</maxSessions>
+                <destination>%%ENV%%.%%CalculateBonitaJMSQueueName%%</destination>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+            <ConnectionReference>/SharedConnections/CalculateBonitaEMSConnection.sharedjmscon</ConnectionReference>
+            <ApplicationProperties>/SharedResources/JMSApplicationProperties.sharedjmsapp</ApplicationProperties>
+            <InDataxsdString ref="pfx2:InputParameters"/>
+            <OutDataxsdString ref="pfx2:PretenderBonita"/>
+        </config>
+        <pd:inputBindings>
+            <ns:ActivityInput>
+                <replyToQueue>
+                    <xsl:value-of select="concat($_globalVariables/ns1:GlobalVariables/ENV, $_globalVariables/ns1:GlobalVariables/ExaminationJMSQueueName)"/>
+                </replyToQueue>
+                <OtherProperties>
+                    <Part>
+                        <xsl:value-of select="&quot;CalculateBonita&quot;"/>
+                    </Part>
+                </OtherProperties>
+                <Body>
+                    <pfx2:InputParameters>
+                        <xsl:if test="$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Name">
+                            <Name>
+                                <xsl:copy-of select="$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Name/@xsi:nil"/>
+                                <xsl:value-of select="$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Name"/>
+                            </Name>
+                        </xsl:if>
+                        <Value>
+                            <xsl:value-of select="$Negate-Value/Value"/>
+                        </Value>
+                        <xsl:if test="$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Salary">
+                            <MonthIncrement>
+                                <xsl:copy-of select="$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Salary/@xsi:nil"/>
+                                <xsl:value-of select="$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Salary"/>
+                            </MonthIncrement>
+                        </xsl:if>
+                        <RealtyValue>
+                            <xsl:choose>
+                                <xsl:when test="exists(if($Appraisal-WaitForJMSQueueMessage/ns:ActivityOutput/Body/pfx4:AppraisalResult/customerName =   $InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Name) then $Appraisal-WaitForJMSQueueMessage/ns:ActivityOutput/Body/pfx4:AppraisalResult/realtyValue else $InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/RealtyValue)">
+                                    <xsl:value-of select="if($Appraisal-WaitForJMSQueueMessage/ns:ActivityOutput/Body/pfx4:AppraisalResult/customerName =   $InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Name) then $Appraisal-WaitForJMSQueueMessage/ns:ActivityOutput/Body/pfx4:AppraisalResult/realtyValue else $InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/RealtyValue"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="xsi:nil">true</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
+                        </RealtyValue>
+                        <xsl:if test="$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Refund">
+                            <Refund>
+                                <xsl:copy-of select="$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Refund/@xsi:nil"/>
+                                <xsl:value-of select="$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Refund"/>
+                            </Refund>
+                        </xsl:if>
+                    </pfx2:InputParameters>
+                </Body>
+            </ns:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Examination">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>669</pd:x>
+        <pd:y>53</pd:y>
+        <config>
+            <processName>/ProcessDefinitions/Examination/Examination.process</processName>
+        </config>
+        <pd:inputBindings>
+            <InputParameters>
+                <Refund>
+                    <xsl:value-of select="$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Refund"/>
+                </Refund>
+                <Salary>
+                    <xsl:value-of select="$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Salary"/>
+                </Salary>
+                <Value>
+                    <xsl:value-of select="$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Value"/>
+                </Value>
+                <Bonita>
+                    <xsl:value-of select="$Bonita-JMSQueueRequestor/ns:ActivityOutput/Body/pfx2:PretenderBonita/Bonita"/>
+                </Bonita>
+                <Pawn>
+                    <xsl:value-of select="$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Pawn"/>
+                </Pawn>
+            </InputParameters>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Negate Value">
+        <pd:type>com.tibco.plugin.mapper.MapperActivity</pd:type>
+        <pd:resourceType>ae.activities.MapperActivity</pd:resourceType>
+        <pd:x>380</pd:x>
+        <pd:y>54</pd:y>
+        <config>
+            <element>
+                <xsd:element name="Value" type="xsd:long"/>
+            </element>
+        </config>
+        <pd:inputBindings>
+            <Value>
+                <xsl:value-of select="-  $InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Value"/>
+            </Value>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Result JMSQueueSender">
+        <pd:type>com.tibco.plugin.jms.JMSQueueSendActivity</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueSendActivity</pd:resourceType>
+        <pd:x>796</pd:x>
+        <pd:y>62</pd:y>
+        <config>
+            <PermittedMessageType>XML Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>1</maxSessions>
+                <destination>%%ENV%%.%%JMSQueueName%%</destination>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+            <ConnectionReference>/SharedConnections/EMSConnection.sharedjmscon</ConnectionReference>
+            <ApplicationProperties>/SharedResources/JMSApplicationProperties.sharedjmsapp</ApplicationProperties>
+            <InDataxsdString ref="pfx:GrantingCreditResult"/>
+        </config>
+        <pd:inputBindings>
+            <ns:ActivityInput>
+                <OtherProperties>
+                    <Part>
+                        <xsl:value-of select="&quot;Result&quot;"/>
+                    </Part>
+                </OtherProperties>
+                <Body>
+                    <pfx:GrantingCreditResult>
+                        <xsl:if test="$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Name">
+                            <Name>
+                                <xsl:copy-of select="$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Name/@xsi:nil"/>
+                                <xsl:value-of select="$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Name"/>
+                            </Name>
+                        </xsl:if>
+                        <xsl:if test="$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Value">
+                            <Value>
+                                <xsl:copy-of select="$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Value/@xsi:nil"/>
+                                <xsl:value-of select="$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Value"/>
+                            </Value>
+                        </xsl:if>
+                        <xsl:if test="$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Refund">
+                            <Refund>
+                                <xsl:copy-of select="$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Refund/@xsi:nil"/>
+                                <xsl:value-of select="$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Refund"/>
+                            </Refund>
+                        </xsl:if>
+                        <xsl:if test="$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Pawn">
+                            <Pawn>
+                                <xsl:copy-of select="$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Pawn/@xsi:nil"/>
+                                <xsl:value-of select="$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Pawn"/>
+                            </Pawn>
+                        </xsl:if>
+                        <Interest>
+                            <xsl:value-of select="$Examination/ExaminationResult/Interest"/>
+                        </Interest>
+                        <State>
+                            <xsl:value-of select="$Examination/ExaminationResult/State"/>
+                        </State>
+                        <RealtyValue>
+                            <xsl:copy-of select="$Appraisal-WaitForJMSQueueMessage/ns:ActivityOutput/Body/pfx4:AppraisalResult/realtyValue/@xsi:nil"/>
+                            <xsl:value-of select="$Appraisal-WaitForJMSQueueMessage/ns:ActivityOutput/Body/pfx4:AppraisalResult/realtyValue"/>
+                        </RealtyValue>
+                        <xsl:if test="$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/RealtyDetail">
+                            <RealtyDetail>
+                                <xsl:copy-of select="$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/RealtyDetail/@xsi:nil"/>
+                                <xsl:value-of select="$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/RealtyDetail"/>
+                            </RealtyDetail>
+                        </xsl:if>
+                    </pfx:GrantingCreditResult>
+                </Body>
+            </ns:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Appraisal WaitForJMSQueueMessage">
+        <pd:type>com.tibco.plugin.jms.JMSQueueSignalInActivity</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueSignalInActivity</pd:resourceType>
+        <pd:x>241</pd:x>
+        <pd:y>102</pd:y>
+        <config>
+            <_eventTimeout>60000</_eventTimeout>
+            <PermittedMessageType>XML Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>-1</maxSessions>
+                <destination>%%ENV%%.%%AppraisalJMSQueueResultName%%</destination>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+            <ConnectionReference>/SharedConnections/EMSConnection.sharedjmscon</ConnectionReference>
+            <ApplicationProperties/>
+            <OutDataxsdString ref="pfx4:AppraisalResult"/>
+        </config>
+        <pd:inputBindings>
+            <pfx3:input/>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Bonita JMSQueueRequestor</pd:from>
+        <pd:to>Examination</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>InputParameters JMSQueueReceiver</pd:from>
+        <pd:to>Negate Value</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Pawn = "false"</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Negate Value</pd:from>
+        <pd:to>Bonita JMSQueueRequestor</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Examination</pd:from>
+        <pd:to>Result JMSQueueSender</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Result JMSQueueSender</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>InputParameters JMSQueueReceiver</pd:from>
+        <pd:to>Appraisal WaitForJMSQueueMessage</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>xpath</pd:conditionType>
+        <pd:xpath>$InputParameters-JMSQueueReceiver/ns:ActivityOutput/Body/pfx:InputParameters/Pawn = "true"</pd:xpath>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Appraisal WaitForJMSQueueMessage</pd:from>
+        <pd:to>Negate Value</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

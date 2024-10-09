@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:pfx="http://xmlns.example.com/1171295149828/LoadParametersServiceOperationImpl" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns="http://www.tibco.com/schemas/GrantingCredit/SharedConnections/Schema.xsd" xmlns:ns1="http://www.tibco.com/pe/DeployedVarsType" xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/jms" xmlns:pfx2="http://www.tibco.com/xmlns/ae2xsd/2002/05/EMS/AESchema" xmlns:pfx3="http://www.tibco.com/xmlns/ae2xsd/2002/05/EMS/GrantingCreditAESchema" xmlns:pfx4="http://www.tibco.com/xmlns/ae2xsd/2002/05/EMS/CalculateBonitaAESchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pfx5="http://www.tibco.com/xmlns/ae2xsd/2002/05/Appraisal/AppraisalAESchema">
+    <xsd:import namespace="http://www.tibco.com/schemas/GrantingCredit/SharedConnections/Schema.xsd" schemaLocation="/SharedResources/InputParametersXSD.xsd"/>
+    <xsd:import namespace="http://www.tibco.com/xmlns/ae2xsd/2002/05/EMS/AESchema" schemaLocation="/AESchemas/EMS/AESchema.aeschema"/>
+    <xsd:import namespace="http://www.tibco.com/xmlns/ae2xsd/2002/05/EMS/CalculateBonitaAESchema" schemaLocation="/AESchemas/EMS/CalculateBonitaAESchema.aeschema"/>
+    <xsd:import namespace="http://www.tibco.com/xmlns/ae2xsd/2002/05/EMS/GrantingCreditAESchema" schemaLocation="/AESchemas/EMS/GrantingCreditAESchema.aeschema"/>
+    <xsd:import namespace="http://www.tibco.com/xmlns/ae2xsd/2002/05/Appraisal/AppraisalAESchema" schemaLocation="/AESchemas/Appraisal/AppraisalAESchema.aeschema"/>
+    <wsdl:import namespace="http://xmlns.example.com/1171295149828/LoadParametersServiceOperationImpl" location="/SharedResources/LoadParametersServiceConcreteWSDL.wsdl"/>
+    <pd:name>ProcessDefinitions/GrantingCredit.process</pd:name>
+    <pd:startName>InputFileName HTTPReceiver</pd:startName>
+    <pd:startX>0</pd:startX>
+    <pd:startY>0</pd:startY>
+    <pd:returnBindings/>
+    <pd:starter name="InputFileName HTTPReceiver">
+        <pd:type>com.tibco.plugin.http.HTTPEventSource</pd:type>
+        <pd:resourceType>httppalette.httpEventSource</pd:resourceType>
+        <pd:x>55</pd:x>
+        <pd:y>72</pd:y>
+        <config>
+            <outputMode>String</outputMode>
+            <defaultEncoding>UTF8</defaultEncoding>
+            <inputOutputVersion>5.3.0</inputOutputVersion>
+            <newMimeSupport>true</newMimeSupport>
+            <sharedChannel>/SharedConnections/InputHTTPConnection.sharedhttp</sharedChannel>
+            <customField>
+                <row>
+                    <attribute>InputParameters</attribute>
+                    <attributeType>string</attributeType>
+                    <attributeCard>optional</attributeCard>
+                </row>
+            </customField>
+            <Headers>
+                <xsd:element name="root">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="Accept" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Accept-Charset" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Accept-Encoding" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Content-Type" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Content-Length" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Connection" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Cookie" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Pragma" type="xsd:string" minOccurs="0"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </Headers>
+        </config>
+        <pd:inputBindings/>
+    </pd:starter>
+    <pd:endName>End</pd:endName>
+    <pd:endX>756</pd:endX>
+    <pd:endY>64</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:activity name="InputParameters SendHTTPResponse">
+        <pd:type>com.tibco.plugin.http.HTTPResponseActivity</pd:type>
+        <pd:resourceType>httppalette.httpWebResponse</pd:resourceType>
+        <pd:x>343</pd:x>
+        <pd:y>72</pd:y>
+        <config>
+            <closeConnection>true</closeConnection>
+            <eventSource>InputFileName HTTPReceiver</eventSource>
+            <Headers>
+                <xsd:element name="root">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="StatusLine" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Content-Type" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Set-Cookie" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Pragma" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="Location" type="xsd:string" minOccurs="0"/>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </Headers>
+        </config>
+        <pd:inputBindings>
+            <ResponseActivityInput>
+                <asciiContent>
+                    <xsl:value-of select="concat(&quot;&lt;H1>InputParameters:&lt;/H1>&lt;B>Name:&lt;/B>  &quot;,&#xA; $InputParameters-SOAPRequestReply/outputMessage/ns:InputParameters/ns:Name,&#xA; &quot;&lt;BR>&lt;B>Value: &lt;/B>&quot;, &#xA;$InputParameters-SOAPRequestReply/outputMessage/ns:InputParameters/ns:Value,&#xA;&quot;&lt;BR>&lt;B>Refund: &lt;/B>&quot;,&#xA;$InputParameters-SOAPRequestReply/outputMessage/ns:InputParameters/ns:Refund,&#xA;&quot;&lt;BR>&lt;B>Salary: &lt;/B>&quot;,  &#xA; $InputParameters-SOAPRequestReply/outputMessage/ns:InputParameters/ns:Salary,&#xA; &quot;&lt;BR>&lt;B>Pawn: &lt;/B>&quot;, &#xA;$InputParameters-SOAPRequestReply/outputMessage/ns:InputParameters/ns:Pawn,&#xA; &quot;&lt;BR>&lt;B>RealtyDetail: &lt;/B>&quot;, &#xA;$InputParameters-SOAPRequestReply/outputMessage/ns:InputParameters/ns:RealtyDetail,&#xA; &quot;&lt;BR>&lt;B>RealtyValue: &lt;/B>&quot;, &#xA;$InputParameters-SOAPRequestReply/outputMessage/ns:InputParameters/ns:RealtyValue)"/>
+                </asciiContent>
+            </ResponseActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="InputParameters SOAPRequestReply">
+        <pd:type>com.tibco.plugin.soap.SOAPSendReceiveActivity</pd:type>
+        <pd:resourceType>ae.activities.SOAPSendReceiveUI</pd:resourceType>
+        <pd:x>190</pd:x>
+        <pd:y>72</pd:y>
+        <config>
+            <timeout>0</timeout>
+            <service>pfx:LoadParametersService</service>
+            <servicePort>InputFileName_sp_from_sp_SOAPEventSource</servicePort>
+            <operation>LoadParametersServiceOperation</operation>
+            <soapAction>/ProcessDefinitions/LoadParameters/LoadParametersService</soapAction>
+            <endpointURL>%%LoadParametersServiceEndpointURL%%</endpointURL>
+            <useProxy>false</useProxy>
+            <requireBasicAuth>false</requireBasicAuth>
+            <basicHttpAuthIdentity/>
+        </config>
+        <pd:inputBindings>
+            <inputMessage>
+                <ns:InputFile>
+                    <ns:FileName>
+                        <xsl:value-of select="$InputFileName-HTTPReceiver/ProcessStarterOutput/parameters/InputParameters"/>
+                    </ns:FileName>
+                </ns:InputFile>
+            </inputMessage>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="InputParameters JMSQueueSender">
+        <pd:type>com.tibco.plugin.jms.JMSQueueSendActivity</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueSendActivity</pd:resourceType>
+        <pd:x>646</pd:x>
+        <pd:y>72</pd:y>
+        <config>
+            <PermittedMessageType>XML Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>1</maxSessions>
+                <destination>%%ENV%%.%%JMSQueueName%%</destination>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+                <JMSReplyTo/>
+            </ConfigurableHeaders>
+            <ConnectionReference>/SharedConnections/EMSConnection.sharedjmscon</ConnectionReference>
+            <ApplicationProperties>/SharedResources/JMSApplicationProperties.sharedjmsapp</ApplicationProperties>
+            <InDataxsdString ref="pfx3:InputParameters"/>
+        </config>
+        <pd:inputBindings>
+            <ns2:ActivityInput>
+                <OtherProperties>
+                    <Part>
+                        <xsl:value-of select="&quot;InputParameters&quot;"/>
+                    </Part>
+                </OtherProperties>
+                <Body>
+                    <pfx3:InputParameters>
+                        <Name>
+                            <xsl:value-of select="$InputParameters-SOAPRequestReply/outputMessage/ns:InputParameters/ns:Name"/>
+                        </Name>
+                        <Value>
+                            <xsl:value-of select="$InputParameters-SOAPRequestReply/outputMessage/ns:InputParameters/ns:Value"/>
+                        </Value>
+                        <Salary>
+                            <xsl:value-of select="$InputParameters-SOAPRequestReply/outputMessage/ns:InputParameters/ns:Salary"/>
+                        </Salary>
+                        <Refund>
+                            <xsl:value-of select="$InputParameters-SOAPRequestReply/outputMessage/ns:InputParameters/ns:Refund"/>
+                        </Refund>
+                        <Pawn>
+                            <xsl:value-of select="$InputParameters-SOAPRequestReply/outputMessage/ns:InputParameters/ns:Pawn"/>
+                        </Pawn>
+                        <RealtyDetail>
+                            <xsl:value-of select="$InputParameters-SOAPRequestReply/outputMessage/ns:InputParameters/ns:RealtyDetail"/>
+                        </RealtyDetail>
+                        <RealtyValue>
+                            <xsl:value-of select="$InputParameters-SOAPRequestReply/outputMessage/ns:InputParameters/ns:RealtyValue"/>
+                        </RealtyValue>
+                    </pfx3:InputParameters>
+                </Body>
+            </ns2:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="Appraisal JMSQueueSender">
+        <pd:type>com.tibco.plugin.jms.JMSQueueSendActivity</pd:type>
+        <pd:resourceType>ae.activities.JMSQueueSendActivity</pd:resourceType>
+        <pd:x>496</pd:x>
+        <pd:y>72</pd:y>
+        <config>
+            <PermittedMessageType>XML Text</PermittedMessageType>
+            <SessionAttributes>
+                <transacted>false</transacted>
+                <acknowledgeMode>1</acknowledgeMode>
+                <maxSessions>1</maxSessions>
+                <destination>%%ENV%%.%%AppraisalJMSQueueRequestName%%</destination>
+            </SessionAttributes>
+            <ConfigurableHeaders>
+                <JMSDeliveryMode>PERSISTENT</JMSDeliveryMode>
+                <JMSExpiration>0</JMSExpiration>
+                <JMSPriority>4</JMSPriority>
+            </ConfigurableHeaders>
+            <ConnectionReference>/SharedConnections/EMSConnection.sharedjmscon</ConnectionReference>
+            <ApplicationProperties/>
+            <InDataxsdString ref="pfx5:AppraisalRequest"/>
+        </config>
+        <pd:inputBindings>
+            <ns2:ActivityInput>
+                <Body>
+                    <pfx5:AppraisalRequest>
+                        <Name>
+                            <xsl:value-of select="$InputParameters-SOAPRequestReply/outputMessage/ns:InputParameters/ns:Name"/>
+                        </Name>
+                        <RealtyDetail>
+                            <xsl:value-of select="$InputParameters-SOAPRequestReply/outputMessage/ns:InputParameters/ns:RealtyDetail"/>
+                        </RealtyDetail>
+                        <Pawn>
+                            <xsl:value-of select="$InputParameters-SOAPRequestReply/outputMessage/ns:InputParameters/ns:Pawn"/>
+                        </Pawn>
+                    </pfx5:AppraisalRequest>
+                </Body>
+            </ns2:ActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>InputFileName HTTPReceiver</pd:from>
+        <pd:to>InputParameters SOAPRequestReply</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>InputParameters SOAPRequestReply</pd:from>
+        <pd:to>InputParameters SendHTTPResponse</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>InputParameters JMSQueueSender</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>InputParameters SendHTTPResponse</pd:from>
+        <pd:to>Appraisal JMSQueueSender</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Appraisal JMSQueueSender</pd:from>
+        <pd:to>InputParameters JMSQueueSender</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

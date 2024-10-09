@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:pfx="http://www.tibco.com/schemas/GrantingCredit/SharedConnections/Schema.xsd" xmlns:ns="http://www.tibco.com/pe/DeployedVarsType" xmlns:ns2="http://www.tibco.com/namespaces/tnt/plugins/file">
+    <xs:import xmlns:xs="http://www.w3.org/2001/XMLSchema" namespace="http://www.tibco.com/schemas/GrantingCredit/SharedConnections/Schema.xsd" schemaLocation="/SharedResources/InputParametersXSD.xsd"/>
+    <pd:name>ProcessDefinitions/XMLCreator/CreateInputFile.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startX>46</pd:startX>
+    <pd:startY>44</pd:startY>
+    <pd:returnBindings/>
+    <pd:endName>End</pd:endName>
+    <pd:endX>326</pd:endX>
+    <pd:endY>44</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:activity name="RenderXML InputParameters">
+        <pd:type>com.tibco.plugin.xml.XMLRendererActivity</pd:type>
+        <pd:resourceType>ae.activities.XMLRendererActivity</pd:resourceType>
+        <pd:x>143</pd:x>
+        <pd:y>52</pd:y>
+        <config>
+            <renderAsText>text</renderAsText>
+            <validateInput>true</validateInput>
+            <textEncoding>UTF-8</textEncoding>
+            <renderDefaultPrefix>true</renderDefaultPrefix>
+            <term ref="pfx:InputParameters"/>
+        </config>
+        <pd:inputBindings>
+            <pfx:InputParameters>
+                <pfx:Name>
+                    <xsl:value-of select="&quot;Jan Novak&quot;"/>
+                </pfx:Name>
+                <pfx:Value>
+                    <xsl:value-of select="750000"/>
+                </pfx:Value>
+                <pfx:Refund>
+                    <xsl:value-of select="5000"/>
+                </pfx:Refund>
+                <pfx:Salary>
+                    <xsl:value-of select="20000"/>
+                </pfx:Salary>
+                <pfx:Pawn>
+                    <xsl:value-of select="1"/>
+                </pfx:Pawn>
+                <pfx:RealtyDetail>
+                    <xsl:value-of select="&quot;Realty no: 1587649&quot;"/>
+                </pfx:RealtyDetail>
+                <pfx:RealtyValue>
+                    <xsl:value-of select="1500000"/>
+                </pfx:RealtyValue>
+            </pfx:InputParameters>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="WriteFile InputFile">
+        <pd:type>com.tibco.plugin.file.FileWriteActivity</pd:type>
+        <pd:resourceType>ae.activities.FileWriteActivity</pd:resourceType>
+        <pd:x>250</pd:x>
+        <pd:y>52</pd:y>
+        <config>
+            <encoding>text</encoding>
+            <compressFile>None</compressFile>
+        </config>
+        <pd:inputBindings>
+            <ns2:WriteActivityInputTextClass>
+                <fileName>
+                    <xsl:value-of select="$_globalVariables/ns:GlobalVariables/DefaultInputParametersFile"/>
+                </fileName>
+                <textContent>
+                    <xsl:value-of select="$RenderXML-InputParameters/xmlString"/>
+                </textContent>
+            </ns2:WriteActivityInputTextClass>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>RenderXML InputParameters</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>RenderXML InputParameters</pd:from>
+        <pd:to>WriteFile InputFile</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>WriteFile InputFile</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Repository:repository xmlns:Repository="http://www.tibco.com/xmlns/repo/types/2002">
+    <enterpriseArchive>
+        <sharedArchive name="Shared Archive">
+            <resourceType>shared.archive.resource</resourceType>
+            <authorProperty>PIKE ELECTRONIC</authorProperty>
+        </sharedArchive>
+        <processArchive name="Process Archive">
+            <resourceType>process.archive.resource</resourceType>
+            <authorProperty>PIKE ELECTRONIC</authorProperty>
+            <processProperty>/ProcessDefinitions/GrantingCredit.process,/ProcessDefinitions/Output/HTMLOutput.process,/ProcessDefinitions/LoadParameters/LoadParametersService.process,/ProcessDefinitions/GetObligator/GetObligatorService.process,/ProcessDefinitions/Examination/ExaminationService.process,/ProcessDefinitions/CalculateBonita/CalculateBonitaService.process</processProperty>
+        </processArchive>
+        <versionProperty>14</versionProperty>
+        <authorProperty>PIKE ELECTRONIC</authorProperty>
+        <addServiceSettableGvars>true</addServiceSettableGvars>
+        <name>GrantingCredit</name>
+        <designer>
+            <lockedProperties/>
+            <fixedChildren/>
+            <resourceDescriptions/>
+        </designer>
+        <fileLocationProperty>X:\MakeDoc\demo\trialBE\trialProjects\GrantingCredit\EAR\GrantingCredit.ear</fileLocationProperty>
+    </enterpriseArchive>
+</Repository:repository>

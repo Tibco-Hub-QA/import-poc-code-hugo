@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <pd:name>ProcessDefinitions/Examination/Examination.process</pd:name>
+    <pd:startName>Start</pd:startName>
+    <pd:startType>
+        <xsd:element name="InputParameters">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="Refund" type="xsd:long"/>
+                    <xsd:element name="Salary" type="xsd:long"/>
+                    <xsd:element name="Value" type="xsd:long"/>
+                    <xsd:element name="Bonita" type="xsd:short"/>
+                    <xsd:element name="Pawn" type="xsd:boolean"/>
+                    <xsd:element name="ID" type="xsd:int"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:startType>
+    <pd:startX>56</pd:startX>
+    <pd:startY>44</pd:startY>
+    <pd:returnBindings>
+        <ExaminationResult>
+            <State>
+                <xsl:value-of select="if(($GetMinRefund-JavaCode/javaCodeActivityOutput/MinRefund &lt;= $Start/InputParameters/Refund) and  ($Schema0/Interest > 0))then 1 else 0"/>
+            </State>
+            <Interest>
+                <xsl:value-of select="$Schema0/Interest"/>
+            </Interest>
+        </ExaminationResult>
+    </pd:returnBindings>
+    <pd:endName>End</pd:endName>
+    <pd:endType>
+        <xsd:element name="ExaminationResult">
+            <xsd:complexType>
+                <xsd:sequence>
+                    <xsd:element name="State" type="xsd:boolean"/>
+                    <xsd:element name="Interest" type="xsd:double"/>
+                </xsd:sequence>
+            </xsd:complexType>
+        </xsd:element>
+    </pd:endType>
+    <pd:endX>493</pd:endX>
+    <pd:endY>48</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables>
+        <Schema0>
+            <xsd:element name="Interest" type="xsd:double"/>
+        </Schema0>
+    </pd:processVariables>
+    <pd:activity name="Interest Assign">
+        <pd:type>com.tibco.pe.core.AssignActivity</pd:type>
+        <pd:resourceType>ae.activities.assignActivity</pd:resourceType>
+        <pd:x>161</pd:x>
+        <pd:y>46</pd:y>
+        <config>
+            <variableName>Schema0</variableName>
+        </config>
+        <pd:inputBindings>
+            <Interest>
+                <xsl:value-of select="if($Start/InputParameters/Bonita >= 4) then 3 else&#xA;if($Start/InputParameters/Bonita >= 3) then 3.5 else&#xA;if($Start/InputParameters/Bonita >= 2) then 4 else&#xA;if($Start/InputParameters/Bonita >= 1) then 4.5 else 0"/>
+            </Interest>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="GetMinRefund JavaCode">
+        <pd:type>com.tibco.plugin.java.JavaActivity</pd:type>
+        <pd:resourceType>ae.javapalette.javaActivity</pd:resourceType>
+        <pd:x>391</pd:x>
+        <pd:y>56</pd:y>
+        <config>
+            <fileName>ExaminationGetMinRefundJavaCode</fileName>
+            <packageName>ProcessDefinitions.Examination.Examination</packageName>
+            <fullsource>package ProcessDefinitions.Examination.Examination;
+import java.util.*;
+import java.io.*;
+import java.lang.Math;
+public class ExaminationGetMinRefundJavaCode{
+/****** START SET/GET METHOD, DO NOT MODIFY *****/
+	protected long Years = 0;
+	protected double Interest = 0.0d;
+	protected long Value = 0;
+	protected long MinRefund = 0;
+	public long getYears() {
+		return Years;
+	}
+	public void setYears(long val) {
+		Years = val;
+	}
+	public double getInterest() {
+		return Interest;
+	}
+	public void setInterest(double val) {
+		Interest = val;
+	}
+	public long getValue() {
+		return Value;
+	}
+	public void setValue(long val) {
+		Value = val;
+	}
+	public long getMinRefund() {
+		return MinRefund;
+	}
+	public void setMinRefund(long val) {
+		MinRefund = val;
+	}
+/****** END SET/GET METHOD, DO NOT MODIFY *****/
+	private double power(double x, long y)
+	{
+		double result = x;
+		
+		for(long i = 0; i &lt; y-1; i++)
+		{
+			result = result * x;
+		}
+		
+		return result;
+	}
+	
+	public ExaminationGetMinRefundJavaCode() {
+		double temp = power((1 + 0.10/12),(getYears()*12));
+		setMinRefund((long)Math.round((getValue() * getInterest() /12 *temp) / (temp-1)));
+	}
+	public void invoke() throws Exception {
+/* Available Variables: DO NOT MODIFY
+	In  : long Years
+	In  : double Interest
+	In  : long Value
+	Out : long MinRefund
+* Available Variables: DO NOT MODIFY *****/
+
+}
+}
+</fullsource>
+            <inputData>
+                <row>
+                    <fieldName>Years</fieldName>
+                    <fieldType>long</fieldType>
+                    <fieldRequired>required</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>Interest</fieldName>
+                    <fieldType>double</fieldType>
+                    <fieldRequired>required</fieldRequired>
+                </row>
+                <row>
+                    <fieldName>Value</fieldName>
+                    <fieldType>long</fieldType>
+                    <fieldRequired>required</fieldRequired>
+                </row>
+            </inputData>
+            <outputData>
+                <row>
+                    <fieldName>MinRefund</fieldName>
+                    <fieldType>long</fieldType>
+                    <fieldRequired>required</fieldRequired>
+                </row>
+            </outputData>
+            <byteCode>
+                <class>
+                    <name>ExaminationGetMinRefundJavaCode</name>
+                    <byteCode>yv66vgAAAC4AQwkAEgAxCQASADIJABIAMwkAEgA0CgATADUGP/AiIiIiIiIKABIANgUAAAAAAAAADAoAEgA3CgASADgKABIAOQZAKAAAAAAAAAoAOgA7CgASADwHAD0HAD4BAAVZZWFycwEAAUoBAAhJbnRlcmVzdAEAAUQBAAVWYWx1ZQEACU1pblJlZnVuZAEACGdldFllYXJzAQADKClKAQAEQ29kZQEAD0xpbmVOdW1iZXJUYWJsZQEACHNldFllYXJzAQAEKEopVgEAC2dldEludGVyZXN0AQADKClEAQALc2V0SW50ZXJlc3QBAAQoRClWAQAIZ2V0VmFsdWUBAAhzZXRWYWx1ZQEADGdldE1pblJlZnVuZAEADHNldE1pblJlZnVuZAEABXBvd2VyAQAFKERKKUQBAAY8aW5pdD4BAAMoKVYBAAZpbnZva2UBAApFeGNlcHRpb25zBwA/AQAKU291cmNlRmlsZQEAJEV4YW1pbmF0aW9uR2V0TWluUmVmdW5kSmF2YUNvZGUuamF2YQwAFAAVDAAWABcMABgAFQwAGQAVDAAqACsMABoAGwwAKAApDAAkABsMACAAIQcAQAwAQQBCDAAnAB8BAEpQcm9jZXNzRGVmaW5pdGlvbnMvRXhhbWluYXRpb24vRXhhbWluYXRpb24vRXhhbWluYXRpb25HZXRNaW5SZWZ1bmRKYXZhQ29kZQEAEGphdmEvbGFuZy9PYmplY3QBABNqYXZhL2xhbmcvRXhjZXB0aW9uAQAOamF2YS9sYW5nL01hdGgBAAVyb3VuZAEABChEKUoAIQASABMAAAAEAAQAFAAVAAAABAAWABcAAAAEABgAFQAAAAQAGQAVAAAACwABABoAGwABABwAAAAdAAIAAQAAAAUqtAABrQAAAAEAHQAAAAYAAQAAAAwAAQAeAB8AAQAcAAAAIgADAAMAAAAGKh+1AAGxAAAAAQAdAAAACgACAAAADwAFABAAAQAgACEAAQAcAAAAHQACAAEAAAAFKrQAAq8AAAABAB0AAAAGAAEAAAASAAEAIgAjAAEAHAAAACIAAwADAAAABiontQACsQAAAAEAHQAAAAoAAgAAABUABQAWAAEAJAAbAAEAHAAAAB0AAgABAAAABSq0AAOtAAAAAQAdAAAABgABAAAAGAABACUAHwABABwAAAAiAAMAAwAAAAYqH7UAA7EAAAABAB0AAAAKAAIAAAAbAAUAHAABACYAGwABABwAAAAdAAIAAQAAAAUqtAAErQAAAAEAHQAAAAYAAQAAAB4AAQAnAB8AAQAcAAAAIgADAAMAAAAGKh+1AASxAAAAAQAdAAAACgACAAAAIQAFACIAAgAoACkAAQAcAAAASQAGAAkAAAAhJzkFCTcHFgchCmWUnAASGAUnazkFFgcKYTcHp//rGAWvAAAAAQAdAAAAFgAFAAAAJgADACgADwAqABUAKAAeAC0AAQAqACsAAQAcAAAAeAAHAAMAAABEKrcABSoJtQABKg61AAIqCbUAAyoJtQAEKhQABiq2AAgUAAlptwALSCoqtgAMiiq2AA1rFAAObydrJw9nb7gAELYAEbEAAAABAB0AAAAiAAgAAAAwAAQABwAJAAgADgAJABMACgAYADEAKAAyAEMAMwABACwAKwACABwAAAAZAAAAAQAAAAGxAAAAAQAdAAAABgABAAAAPAAtAAAABAABAC4AAQAvAAAAAgAw</byteCode>
+                </class>
+            </byteCode>
+        </config>
+        <pd:inputBindings>
+            <javaCodeActivityInput>
+                <Years>
+                    <xsl:value-of select="20"/>
+                </Years>
+                <Interest>
+                    <xsl:value-of select="$Schema0/Interest * 0.01"/>
+                </Interest>
+                <Value>
+                    <xsl:value-of select="$Start/InputParameters/Value"/>
+                </Value>
+            </javaCodeActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="UpdateCustomerDB">
+        <pd:type>com.tibco.plugin.jdbc.JDBCUpdateActivity</pd:type>
+        <pd:resourceType>ae.activities.JDBCUpdateActivity</pd:resourceType>
+        <pd:x>270</pd:x>
+        <pd:y>46</pd:y>
+        <config>
+            <timeout>10</timeout>
+            <commit>false</commit>
+            <emptyStrAsNil>false</emptyStrAsNil>
+            <jdbcSharedConfig>/SharedConnections/SharedTibco.sharedjdbc</jdbcSharedConfig>
+            <statement>UPDATE STATES
+SET INTEREST = ?
+WHERE ID = ?</statement>
+            <Prepared_Param_DataType>
+                <parameter>
+                    <parameterName>interest</parameterName>
+                    <dataType>DECIMAL</dataType>
+                </parameter>
+                <parameter>
+                    <parameterName>customer_id</parameterName>
+                    <dataType>INTEGER</dataType>
+                </parameter>
+            </Prepared_Param_DataType>
+        </config>
+        <pd:inputBindings>
+            <jdbcUpdateActivityInput>
+                <interest>
+                    <xsl:value-of select="$Schema0/Interest"/>
+                </interest>
+                <customer_id>
+                    <xsl:value-of select="$Start/InputParameters/ID"/>
+                </customer_id>
+            </jdbcUpdateActivityInput>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>Start</pd:from>
+        <pd:to>Interest Assign</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>GetMinRefund JavaCode</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>Interest Assign</pd:from>
+        <pd:to>UpdateCustomerDB</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>UpdateCustomerDB</pd:from>
+        <pd:to>GetMinRefund JavaCode</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

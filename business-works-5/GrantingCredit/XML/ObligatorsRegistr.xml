@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ObligatorsList xmlns="http://www.tibco.com/schemas/GrantingCredit/SharedConnections/Schema1.xsd" Count="1">
+    <Obligator>
+        <Name>Jan Novak</Name>
+        <Value>100000</Value>
+        <Problem>false</Problem>
+        <Refund>5000</Refund>
+    </Obligator>
+</ObligatorsList>

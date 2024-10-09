@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AccountsList xmlns="http://www.tibco.com/schemas/AccountState/SharedResources/Schema.xsd" Count="1">
+    <Account>
+        <Number>123456789</Number>
+        <Name>Jan Novak</Name>
+        <Value>1545738</Value>
+        <MonthIncrement>75000</MonthIncrement>
+        <Password>key</Password>
+    </Account>
+</AccountsList>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pd:ProcessDefinition xmlns:pd="http://xmlns.tibco.com/bw/process/2003" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:ns="http://www.tibco.com/schemas/GrantingCredit/SharedConnections/Schema.xsd" xmlns:pfx="http://xmlns.example.com/1171295149828" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+    <wsdl:import namespace="http://xmlns.example.com/1171295149828" location="/SharedResources/LoadParametersServiceAbstractWSDL.wsdl"/>
+    <pd:name>ProcessDefinitions/LoadParameters/LoadParametersService.process</pd:name>
+    <pd:startName>InputFileName from SOAPEventSource</pd:startName>
+    <pd:startX>0</pd:startX>
+    <pd:startY>0</pd:startY>
+    <pd:returnBindings/>
+    <pd:starter name="InputFileName from SOAPEventSource">
+        <pd:type>com.tibco.plugin.soap.SOAPEventSource</pd:type>
+        <pd:resourceType>ae.activities.SOAPEventSourceUI</pd:resourceType>
+        <pd:x>80</pd:x>
+        <pd:y>52</pd:y>
+        <config>
+            <service>pfx:LoadParametersServicePort</service>
+            <wsdlNamespaceRoot>http://xmlns.example.com/1171295149828/LoadParametersServiceOperationImpl</wsdlNamespaceRoot>
+            <operation>LoadParametersServiceOperation</operation>
+            <portAddressPrefix/>
+            <operationStyle>document</operationStyle>
+            <soapUse>literal</soapUse>
+            <embedWsdlComponents>true</embedWsdlComponents>
+            <embedSchemaComponents>true</embedSchemaComponents>
+            <soapAction>/ProcessDefinitions/LoadParameters/LoadParametersService</soapAction>
+            <sharedChannel>/SharedConnections/SOAPHTTPConnection.sharedhttp</sharedChannel>
+            <inputAttachmentBindings/>
+            <outputAttachmentBindings/>
+        </config>
+        <pd:inputBindings/>
+    </pd:starter>
+    <pd:endName>End</pd:endName>
+    <pd:endX>466</pd:endX>
+    <pd:endY>44</pd:endY>
+    <pd:errorSchemas/>
+    <pd:processVariables/>
+    <pd:activity name="InputParameters SOAPSendReply">
+        <pd:type>com.tibco.plugin.soap.SOAPSendReplyActivity</pd:type>
+        <pd:resourceType>ae.activities.SOAPSendReplyUI</pd:resourceType>
+        <pd:x>353</pd:x>
+        <pd:y>52</pd:y>
+        <config>
+            <eventSource>InputFileName from SOAPEventSource</eventSource>
+        </config>
+        <pd:inputBindings>
+            <outputMessage>
+                <xsl:copy-of select="$LoadParameters/ns:InputParameters"/>
+            </outputMessage>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:activity name="LoadParameters">
+        <pd:type>com.tibco.pe.core.CallProcessActivity</pd:type>
+        <pd:resourceType>ae.process.subprocess</pd:resourceType>
+        <pd:x>223</pd:x>
+        <pd:y>44</pd:y>
+        <config>
+            <processName>/ProcessDefinitions/LoadParameters/LoadParameters.process</processName>
+        </config>
+        <pd:inputBindings>
+            <xsl:copy-of select="$InputFileName-from-SOAPEventSource/inputMessage/ns:InputFile"/>
+        </pd:inputBindings>
+    </pd:activity>
+    <pd:transition>
+        <pd:from>InputFileName from SOAPEventSource</pd:from>
+        <pd:to>LoadParameters</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>LoadParameters</pd:from>
+        <pd:to>InputParameters SOAPSendReply</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+    <pd:transition>
+        <pd:from>InputParameters SOAPSendReply</pd:from>
+        <pd:to>End</pd:to>
+        <pd:lineType>Default</pd:lineType>
+        <pd:lineColor>-16777216</pd:lineColor>
+        <pd:conditionType>always</pd:conditionType>
+    </pd:transition>
+</pd:ProcessDefinition>

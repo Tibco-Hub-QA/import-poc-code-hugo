@@ -1,0 +1,5 @@
+#Design time libraries
+#Format: #=File Alias=Description
+#Thu Dec 01 13:18:26 CET 2011
+1=CalculateBonita\=CalculateBonita library
+0=envDL\=envDL library
