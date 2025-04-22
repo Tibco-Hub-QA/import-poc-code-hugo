@@ -1,0 +1,35 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: tibco.bwce.sample.binding.rest.BookStore.application
+  description: >-
+    [{"ref":"github.com/tibco/flogo-general/src/app/General","version":"1.5.1","tag":"1.5.1-b09-swagger-gen","name":"General","id":"General","s3location":"Tibco/General","isUserExtension":false,"shim":false}]
+  tags:
+    - bwce
+  links:
+    - title: TIBCO Business Works
+      url: https://www.tibco.com/products/tibco-businessworks
+  annotations:
+    github.com/project-slug: https://github.com/Tibco-Hub-QA/import-poc-code-hugo
+spec:
+  type: bwce
+  lifecycle: production
+  owner: group:default/tibco-imported
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: Test_Component
+  description: This is an Awesome BW Project
+  tags:
+    - bwce
+  links:
+    - title: TIBCO Business Works
+      url: https://www.tibco.com/products/tibco-businessworks
+  annotations:
+    github.com/project-slug: https://github.com/Tibco-Hub-QA/import-poc-code-hugo
+spec:
+  type: bwce
+  lifecycle: production
+  owner: group:default/tibco-imported
