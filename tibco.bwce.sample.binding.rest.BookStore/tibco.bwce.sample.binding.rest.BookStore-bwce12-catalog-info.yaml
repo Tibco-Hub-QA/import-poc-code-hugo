@@ -20,7 +20,7 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: abbb
-  description: This is an Awesome BW Project
+  description: name=bwext
   tags:
     - bwce
   links:
