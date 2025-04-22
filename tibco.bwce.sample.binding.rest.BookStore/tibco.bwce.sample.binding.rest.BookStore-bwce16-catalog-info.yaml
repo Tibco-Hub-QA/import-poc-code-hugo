@@ -1,0 +1,33 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  description: Testencoding64base
+  tags:
+    - bwce
+  links:
+    - title: TIBCO Business Works
+      url: https://www.tibco.com/products/tibco-businessworks
+  annotations:
+    github.com/project-slug: https://github.com/Tibco-hub-QA/import-poc-code-hugo
+spec:
+  type: bwce
+  lifecycle: production
+  owner: group:default/tibco-imported
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: Test_Component
+  description: This is an Awesome BW Project
+  tags:
+    - bwce
+  links:
+    - title: TIBCO Business Works
+      url: https://www.tibco.com/products/tibco-businessworks
+  annotations:
+    github.com/project-slug: https://github.com/Tibco-hub-QA/import-poc-code-hugo
+spec:
+  type: bwce
+  lifecycle: production
+  owner: group:default/tibco-imported
