@@ -19,8 +19,8 @@ spec:
 apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
-  name: abbb
-  description: name=bw.generalactivities
+  name: testregex2
+  description: name=bw.jdbc
   tags:
     - bwce
   links:
