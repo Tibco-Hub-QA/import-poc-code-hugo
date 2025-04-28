@@ -13,7 +13,7 @@ metadata:
 spec:
   type: bwce
   lifecycle: production
-  owner: group:default/tibco-imported
+  owner: group:default/docgeneration
 
 ---
 apiVersion: backstage.io/v1alpha1
@@ -31,4 +31,4 @@ metadata:
 spec:
   type: bwce
   lifecycle: production
-  owner: group:default/tibco-imported
+  owner: group:default/docgeneration
