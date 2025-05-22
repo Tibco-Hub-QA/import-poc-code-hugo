@@ -9,7 +9,7 @@ metadata:
     - title: TIBCO Business Works
       url: https://www.tibco.com/products/tibco-businessworks
   annotations:
-    github.com/project-slug: https://github.com/Tibco-Hub-QA/import-poc-code-hugo
+    github.com/project-slug: https://github.com/TIBCO-Hub-QA/import-poc-code-hugo
 spec:
   type: bwce
   lifecycle: production
@@ -27,7 +27,7 @@ metadata:
     - title: TIBCO Business Works
       url: https://www.tibco.com/products/tibco-businessworks
   annotations:
-    github.com/project-slug: https://github.com/Tibco-Hub-QA/import-poc-code-hugo
+    github.com/project-slug: https://github.com/TIBCO-Hub-QA/import-poc-code-hugo
 spec:
   type: bwce
   lifecycle: production
