@@ -10,8 +10,7 @@ metadata:
       url: https://www.tibco.com/products/tibco-businessworks
   annotations:
     github.com/project-slug: https://github.com/Tibco-Hub-QA/import-poc-code-hugo
-    backstage.io/techdocs-ref: dir:.
 spec:
   type: bwce
   lifecycle: production
-  owner: group:default/carimporter
+  owner: group:default/docgeneration
