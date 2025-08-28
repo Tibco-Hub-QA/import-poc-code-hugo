@@ -13,4 +13,4 @@ metadata:
 spec:
   type: bwce
   lifecycle: production
-  owner: group:default/carimporter
+  owner: group:default/docgeneration
