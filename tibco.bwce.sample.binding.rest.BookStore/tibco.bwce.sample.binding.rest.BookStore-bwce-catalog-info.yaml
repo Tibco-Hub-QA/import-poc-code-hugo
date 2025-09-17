@@ -13,4 +13,4 @@ metadata:
 spec:
   type: bwce
   lifecycle: production
-  owner: group:default/docgeneration
+  owner: group:default/operational-department
